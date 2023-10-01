@@ -9,9 +9,7 @@ const port = process.env.PORT || 4000
 
 
 app.get("/", (req, res) => {
-    res.json({
-        message: "hi"
-    })
+    res.sendFile(__dirname + "/index.html")
 })
 
 
