@@ -42,9 +42,14 @@ dotenv.config();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT || 4000
 
+console.log("Booting up server")
+setTimeout(() => {
+    console.log("Waiting for kafka to start")
+}, 5000)
 
+setTimeout(() => {
 
-
+    
 
     const app = express();
 
@@ -62,6 +67,7 @@ const port = process.env.PORT || 4000
     const consumer = kafka.consumer({ groupId: 'kafka' })
 
     consumer.connect()
+    console.log("Kafka started")
     consumer.subscribe({ topic: 'messaging-service', fromBeginning: true })
 
     consumer.run({
@@ -209,3 +215,4 @@ const port = process.env.PORT || 4000
         })
     }
     )
+}, 10000)
