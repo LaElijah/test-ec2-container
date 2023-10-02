@@ -14,6 +14,10 @@ export default avro.Type.forSchema({
         {
             name: 'username',
             type: 'string'
+        },
+        {
+            name: 'topic',
+            type: 'string'
         }
         
         // {

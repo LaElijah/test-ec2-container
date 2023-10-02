@@ -85,12 +85,13 @@ setTimeout(() => {
 
         try {
             console.log(req.body)
-            const { message, groupId, username } = req.body.payload
+            const { message, groupId, username, type } = req.body.payload
 
             const event = {
                 message: message,
                 groupId: groupId,
                 username: username,
+                type: type
             }
 
             await queueMessage(event);
