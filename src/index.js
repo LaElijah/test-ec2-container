@@ -72,7 +72,7 @@ setTimeout(() => {
 
     consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
-            console.log(eventType.fromBuffer(message.value))
+            console.log("about to emit", eventType.fromBuffer(message.value))
             wsServer.emit("message", message.value)
         },
     })
@@ -149,6 +149,7 @@ setTimeout(() => {
 
 
         socket.on("message", (msg) => {
+            console.log("has message")
 
             const decodedMessage = JSON.parse(msg.toString())
 
