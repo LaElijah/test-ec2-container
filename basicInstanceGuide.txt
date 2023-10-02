@@ -31,7 +31,7 @@ Step 6: make an image with the dockerfile in test-ec2-container/src with:
 - sudo docker run build -t <username>/<service-name> .
 
 
-``` Skip to step 11 if its your first run ```
+``` Skip to step 12 if its your first run ```
 
 Step 7: Update git project with: 
 - git pull 
@@ -42,8 +42,11 @@ Step 8: get docker container id from:
 Step 9: shut down container with: 
 - sudo docker stop <container-id>
 
-Step 10: rebuild the docker container with:
+step 10: remove image with:
+- docker rmi <username>/<service-name> -f
+
+Step 11: rebuild the docker container with:
 - sudo docker run build -t <username>/<service-name> . 
 
-Step 11: run the image in the background with: 
+Step 12: run the image in the background with: 
 - sudo docker run -dp <public-ip>:80:3000 <username>/<service-name> 

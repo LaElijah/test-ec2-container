@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,9 +11,55 @@
     <section>
         <h1>Just Testing</h1>
         <p>Can you see this?</p>
+        <button id="btn">Send</button>
 
     </section>
 
 </body>
+<script>
+    
+    var ws = new WebSocket("ws://localhost:8080");
+    ws.onopen = function() {
+
+        ws.send(JSON.stringify({
+            type: "handshake",
+            payload: {
+                username: "John",
+                groupId: "join-1"
+
+            }
+        }));
+    };
+
+    ws.onmessage = function(evt) {
+        console.log(JSON.parse(evt.data).payload);
+    };
+
+    
+
+    const buttonElement = document.getElementById("btn");
+
+    buttonElement.addEventListener("click", async function() {
+        const response = await fetch("http://localhost:8080/create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                payload: {
+                    groupId: "join-1",
+                    message: "hiii",
+                    username: "test_8"
+                }
+            })
+        });
+        const data = await response.json();
+        console.log(data);
+    });
+   
+   
+
+    console.log("Hello World");
+</script>
 
 </html>
