@@ -16,7 +16,7 @@ export default avro.Type.forSchema({
             type: 'string'
         },
         {
-            name: 'topic',
+            name: 'type',
             type: 'string'
         }
         
