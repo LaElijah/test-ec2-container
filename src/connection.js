@@ -1,27 +1,9 @@
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Test Site</title>
-</head>
-
-<body>
-    <section>
-        <h1>Just Testing</h1>
-        <p>Can you see this?</p>
-        <button id="btn">Send</button>
-
-    </section>
-
-</body>
-
-<script >
+import dotenv from 'dotenv';
+dotenv.config();
 
 // Replace localhost with your IP;
 // 54.209.121.134
-const ws = new WebSocket(`ws://54.209.121.134`);
+const ws = new WebSocket(`ws://${process.env.PUBLIC_HOST}`);
 ws.onopen = function() {
 
     ws.send(JSON.stringify({
@@ -39,7 +21,7 @@ ws.onmessage = function(evt) {
 
 
 async function publishMessage(message) {
-    const response = await fetch(`http://54.209.121.134/create`, {
+    const response = await fetch(`http://${process.env.PUBLIC_HOST}/create`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -65,6 +47,3 @@ buttonElement.addEventListener("click", async function() {
 
 
 console.log("Hello World");
-</script>
-
-</html>

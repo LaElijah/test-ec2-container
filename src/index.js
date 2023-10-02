@@ -111,12 +111,12 @@ wsServer.on("connection", (socket) => {
 
 
 
-
+  
 
     socket.on("message", (msg) => {
-
+ 
         const decodedMessage = JSON.parse(msg.toString())
-
+   
         if (decodedMessage.type === "handshake") {
             username = decodedMessage.payload.username
             clients[username] = socket
