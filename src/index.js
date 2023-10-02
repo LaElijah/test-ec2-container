@@ -90,25 +90,6 @@ consumer.subscribe({ topic: 'messaging-service', fromBeginning: true })
 
 
 
-consumer.run({
-    eachMessage: async ({ topic, partition, message }) => {
-        console.log(message.value.toString())
-        let event = eventType.fromBuffer(message.value);
-        let group = groups[event.groupId]
-
-        if (group) {
-
-            group.forEach((client) => {
-                if (client != clients[event.username]) {
-                    client.send(JSON.stringify({
-                        type: "message",
-                        payload: event
-                    }))
-                }
-            })
-        }
-    },
-})
 
 
 
@@ -186,6 +167,27 @@ wsServer.on("connection", (socket) => {
     })
 }
 )
+
+consumer.run({
+    eachMessage: async ({ topic, partition, message }) => {
+        console.log(message.value.toString())
+        let event = eventType.fromBuffer(message.value);
+        let group = groups[event.groupId]
+
+        if (group) {
+
+            group.forEach((client) => {
+                if (client != clients[event.username]) {
+                    client.send(JSON.stringify({
+                        type: "message",
+                        payload: event
+                    }))
+                }
+            })
+        }
+    },
+})
+
 
 
 
