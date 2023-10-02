@@ -47,6 +47,11 @@ setTimeout(() => {
     console.log("Waiting for kafka to start")
 }, 5000)
 
+
+const clients = {}
+const groups = {}
+
+
 setTimeout(() => {
 
     
@@ -72,8 +77,34 @@ setTimeout(() => {
 
     consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
-            console.log("about to emit", eventType.fromBuffer(message.value))
-            wsServer.emit("message", message.value)
+            const event = eventType.fromBuffer(message.value)
+            console.log("about to emit", event)
+            // Type here for message dispension logic 
+            // with a switch statement for private and group
+            // messages
+            switch (event.type) {
+                case "private":
+                    privateMessage(event.id, event.msg, clients)
+                    break;
+
+                case "group":
+                    let group = groups[event.groupId]
+
+                    if (group) {
+                        group.forEach((client) => {
+                            if (client != clients[event.username]) {
+                                clients[client].send(JSON.stringify({
+                                    type: "message",
+                                    payload: event
+                                }))
+                            }
+                        })
+                    }
+                    break;
+                default: break;
+            }
+
+
         },
     })
 
@@ -117,9 +148,6 @@ setTimeout(() => {
     })
 
 
-
-    const clients = {}
-    const groups = {}
 
 
     const httpServer = app.listen(port, () => {
@@ -181,34 +209,17 @@ setTimeout(() => {
 
                     break;
 
-                case "private":
-                    privateMessage(decodedMessage.id, decodedMessage.msg, clients)
-                    break;
-
-                case "group":
-                    let group = groups[decodedMessage.groupId]
-
-                    if (group) {
-                        group.forEach((client) => {
-                            if (client != clients[decodedMessage.username]) {
-                                clients[client].send(JSON.stringify({
-                                    type: "message",
-                                    payload: decodedMessage
-                                }))
-                            }
-                        })
-                    }
-                    break;
-            }
-
-        })
+                }
+            })
 
 
         socket.on("close", () => {
-            delete clients[id]
+            delete clients[username]
             console.log(Object.keys(clients))
         })
+
     })
+    
 
 
 
