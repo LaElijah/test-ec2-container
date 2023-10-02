@@ -37,3 +37,18 @@ services:
     depends_on:
       - kafka
 
+  # producer:
+  #   image: "node:latest"
+  #   environment: 
+  #     - KAFKA_HOST=kafka:9092
+  #     - PUBLIC_HOST=54.209.121.134
+  #   volumes:
+  #     - "./:/src"
+  #     - "/src/node_modules"
+  #   working_dir: "/src"
+  #   command: "npm run producer"
+  #   depends_on:
+  #     - kafka
+  #     - node
+
+
