@@ -58,8 +58,17 @@ async function publishMessage(message) {
 
 const buttonElement = document.getElementById("btn");
 
-buttonElement.addEventListener("click", async function() {
-    await publishMessage();
+function handleClick(cb) {
+    console.log("clicked");
+
+    const callback = async () => {
+        await cb();
+    }
+    callback();
+}
+
+buttonElement.addEventListener("click", function() {
+    handleClick(publishMessage);
 });
 
 
