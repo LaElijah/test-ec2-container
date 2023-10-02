@@ -54,7 +54,7 @@ const groups = {}
 
 setTimeout(() => {
 
-    
+
 
     const app = express();
 
@@ -206,11 +206,16 @@ setTimeout(() => {
                             )
                         }
                     })
-
                     break;
 
-                }
-            })
+                default:
+                    const queue = async () => {
+                        await queueMessage(decodedMessage)
+                    }
+                    queue()
+
+            }
+        })
 
 
         socket.on("close", () => {
@@ -219,7 +224,7 @@ setTimeout(() => {
         })
 
     })
-    
+
 
 
 
