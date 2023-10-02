@@ -84,7 +84,7 @@ setTimeout(() => {
     app.post('/create', async (req, res) => {
 
         try {
-            console.log(req.body)
+            console.log("now on service", req.body)
             const { message, groupId, username, type } = req.body.payload
 
             const event = {
