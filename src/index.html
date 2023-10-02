@@ -16,11 +16,14 @@
     </section>
 
 </body>
+
 <script>
+    import dotenv from 'dotenv';
+    dotenv.config();
 
     // Replace localhost with your IP;
     // 54.209.121.134
-    var ws = new WebSocket("ws://localhost");
+    var ws = new WebSocket(`ws://${process.env.PUBLIC_HOST}`);
     ws.onopen = function() {
 
         ws.send(JSON.stringify({
@@ -43,7 +46,7 @@
     buttonElement.addEventListener("click", async function() {
         // Replace localhost with your IP;
         // 54.209.121.134
-        const response = await fetch("http://localhost/create", {
+        const response = await fetch(`http://${process.env.PUBLIC_HOST}/create`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
