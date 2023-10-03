@@ -177,49 +177,51 @@ setTimeout(() => {
 
 
         socket.on("message", (msg) => {
-            console.log("has message")
-
             const decodedMessage = JSON.parse(msg.toString())
 
 
-            switch (decodedMessage.type) {
-                case "handshake":
-                    username = decodedMessage.payload.username
-                    clients[username] = socket
+            if (decodedMessage.type === "handshake") {
 
-                    groupId = decodedMessage.payload.groupId
-                    groups[groupId] = groups[groupId] || []
-                    groups[groupId].push(username)
+                username = decodedMessage.payload.username
+                clients[username] = socket
 
-                    wsServer.clients.forEach((client) => {
-                        if (client.readyState === ws.OPEN) {
-                            let clientList = []
-                            Object.keys(clients).forEach((key) => {
-                                clientList.push(key)
-                            })
+                groupId = decodedMessage.payload.groupId
+                groups[groupId] = groups[groupId] || []
+                groups[groupId].push(username)
+
+                wsServer.clients.forEach((client) => {
+                    if (client.readyState === ws.OPEN) {
+                        let clientList = []
+                        Object.keys(clients).forEach((key) => {
+                            clientList.push(key)
+                        })
 
 
-                            client.send(JSON.stringify({
-                                type: "clients",
-                                payload: clientList
-                            })
-                            )
-                        }
-                    })
-                    break;
-
-                default:
-                    const queue = async () => {
-                        await queueMessage(decodedMessage)
+                        client.send(JSON.stringify({
+                            type: "clients",
+                            payload: clientList
+                        })
+                        )
                     }
-                    queue()
-
+                })
             }
+            const queue = async () => {
+                await queueMessage(decodedMessage.payload)
+            }
+            queue()
+
         })
 
 
         socket.on("close", () => {
-            delete clients[username]
+            console.log("client disconnected")
+            socket.terminate()  
+
+            
+            delete groups[groupId][groups[groupId].indexOf(username)]
+
+            const currentClient = Object.keys(clients).find(key => clients[key] === socket)
+            delete clients[currentClient]
             console.log(Object.keys(clients))
         })
 
