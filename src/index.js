@@ -205,13 +205,15 @@ setTimeout(() => {
                         )
                     }
                 })
-            } else if (decodedMessage.type === "group") {
+                return;
+            }  
+
             const queue = async () => {
                 await queueMessage(decodedMessage.payload)
             }
             queue()
 
-        })
+        } )
 
 
         socket.on("close", () => {
