@@ -178,6 +178,7 @@ setTimeout(() => {
 
         socket.on("message", (msg) => {
             const decodedMessage = JSON.parse(msg.toString())
+            console.log(decodedMessage)
 
 
             if (decodedMessage.type === "handshake") {
@@ -217,7 +218,7 @@ setTimeout(() => {
             console.log("client disconnected")
             socket.terminate()  
 
-            
+
             delete groups[groupId][groups[groupId].indexOf(username)]
 
             const currentClient = Object.keys(clients).find(key => clients[key] === socket)
