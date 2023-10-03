@@ -205,7 +205,7 @@ setTimeout(() => {
                         )
                     }
                 })
-            }
+            } else if (decodedMessage.type === "group") {
             const queue = async () => {
                 await queueMessage(decodedMessage.payload)
             }
