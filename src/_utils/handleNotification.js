@@ -1,3 +1,8 @@
+export default function handleNotification(event) {
+
+}
+
+
 import eventType from "./eventType.js";
 import { Kafka } from 'kafkajs';
 
@@ -22,7 +27,7 @@ export default async function queueMessage(event) {
 
 
     const success = await producer.send({
-        topic: 'messaging-service',
+        topic: 'notification-service',
         messages: [
             {value: eventType.toBuffer({...event})}
         ]
