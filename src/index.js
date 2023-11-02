@@ -3,16 +3,20 @@ import { WebSocketServer } from 'ws';
 import ws from 'ws';
 import { Kafka } from 'kafkajs';
 import eventType from './_utils/messageType.js';
-import privateMessage from './_utils/privateMessage.js';
 import queueEvent from './_utils/queueEvent.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+import https from 'https'
+import fs from "fs"
 dotenv.config();
 
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT || 4000
+
+const key = fs.readFileSync('./key-rsa.pem');
+    const cert = fs.readFileSync('./cert.pem');
 
 console.log("Booting up server")
 
@@ -65,7 +69,7 @@ setTimeout(() => {
                         
 
                         // change this back to a not equal check
-                        
+
                         
                         if (client.split('-')[0] !== event.sender) {
                             console.log("sending")
@@ -123,7 +127,8 @@ setTimeout(() => {
         res.sendFile(__dirname + "/index.html")
     })
 
-    const httpServer = app.listen(port, () => {
+    let server = https.createServer({key, cert}, app)
+    const httpServer = server.listen(port, () => {
         console.log(`Server is running at ${port}`)
     })
 
@@ -131,7 +136,7 @@ setTimeout(() => {
 
 
 
-    const wsServer = new WebSocketServer({ noServer: true })
+    const wsServer = new WebSocketServer({ server })
 
 
 
@@ -164,7 +169,7 @@ setTimeout(() => {
                 // tells client whos in the group right now
                 groups[groupId].forEach((client) => {
                     // add a notification function here for if the client ready state is closed so make it an else statement
-                    if (clients[client].readyState === ws.OPEN) {
+                    if (clients[client] && clients[client].readyState === ws.OPEN) {
                         clients[client].send(JSON.stringify({
                             type: "clients",
                             payload: groups[groupId]
