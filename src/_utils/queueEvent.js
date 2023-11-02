@@ -5,6 +5,7 @@ import notificationType from "./notificationType.js"
 
 
 export default async function queueEvent(event, topic) {
+   
     let getBufferType = (topic) => {
         switch (topic) {
             case "messaging-service":

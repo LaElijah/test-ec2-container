@@ -52,44 +52,37 @@ setTimeout(() => {
     consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
             const event = eventType.fromBuffer(message.value)
-            console.log("about to emit", event)
 
             switch (event.type) {
-                case "private":
-                    privateMessage(event.id, event.msg, clients)
-                    break;
 
-                case "group":
-                    let group = groups[event.groupId]
+                case "message":
 
-                    if (group) {
-                        group.forEach((client) => {
-                            if (client != clients[event.username]) {
-                                clients[client].send(JSON.stringify({
-                                    type: "message",
-                                    payload: event
-                                }))
+                // if client is found i can do this by splitting of the username and checking if its a key within the clients object
+                const clientNames = Object.keys(clients).map(key => key.split('-')[0])
 
-                            }
-                            
-                        })
-                        // To let the user know their message was a suuccess, might be better off sending a notification eevnt 
-                        // clients[event.username].send(JSON.stringify({
-                        //     type: 'status',
-                        //     payload: {
-                        //         status: 'success'
-                        //     }
-                        // }))
-                    }
-                    break;
+                if (clientNames.find((name) => name === event.receiver)) // If the server finds the receiver on the clients map
+                    groups[event.groupId].forEach((client) => {
+                        
 
-                case "notification":
-                    handleNotification(event, clients)
-                default: break;
+                        // change this back to a not equal check
+                        
+                        
+                        if (client.split('-')[0] !== event.sender) {
+                            console.log("sending")
+                            clients[client].send(JSON.stringify({
+                            type: "message",
+                            payload: event
+                        }))}
+                    })
+                // To let the user know their message was a suuccess, might be better off sending a notification eevnt 
+                // clients[event.username].send(JSON.stringify({
+                //     type: 'status',
+                //     payload: {
+                //         status: 'success'
+                //     }
+                // }))
             }
-
-
-        },
+        }
     })
 
 
@@ -143,56 +136,58 @@ setTimeout(() => {
 
 
 
-    wsServer.on("connection", async (socket) => {
-        let username
-        let groupId
+    wsServer.on("connection", async (socket, req) => {
+        let ip = req.socket.remoteAddress
 
 
         socket.on("message", async (msg) => {
             const decodedMessage = JSON.parse(msg.toString())
+            console.log("message here", decodedMessage.sender)
 
-            if (decodedMessage.type === "handshake") {
+            if (decodedMessage.payload.type === "handshake") {
 
-                username = decodedMessage.payload.username
-                clients[username] = socket
+                let sender = decodedMessage.payload.sender
+                let groupId = decodedMessage.payload.groupId
 
-                groupId = decodedMessage.payload.groupId
-                groups[groupId] = groups[groupId] || []
-                groups[groupId].push(username)
+                clients[`${sender}-${ip}`] = socket
+               
+                if (groups[groupId] && groups[groupId].indexOf(`${sender}-${ip}`) === -1) groups[groupId] = [...groups[groupId], `${sender}-${ip}`]
+                else if (!groups[groupId]) groups[groupId] = [`${sender}-${ip}`]
+                console.log(groups)
+                
 
-                wsServer.clients.forEach((client) => {
-                    if (client.readyState === ws.OPEN) {
-                        let clientList = []
-                        Object.keys(clients).forEach((key) => {
-                            clientList.push(key)
-                        })
 
-                        client.send(JSON.stringify({
+                // Implementing this to get benifits from horizontal scaling
+                // Needs sticky sessions to get benifits
+
+
+                // tells client whos in the group right now
+                groups[groupId].forEach((client) => {
+                    // add a notification function here for if the client ready state is closed so make it an else statement
+                    if (clients[client].readyState === ws.OPEN) {
+                        clients[client].send(JSON.stringify({
                             type: "clients",
-                            payload: clientList
+                            payload: groups[groupId]
                         })
                         )
                     }
                 })
-                return;
             }
 
-                await queueEvent(decodedMessage.payload, "messaging-service")
-           
+            if (decodedMessage.payload.type === "message") await queueEvent(decodedMessage.payload, "messaging-service")
+            // if the reciver is not on the server, send the event to the notification bus too 
+            // if (!clients[decodedMessage.payload.receiver]) await queueEvent(decodedMessage.payload, "notification-service")
 
         })
 
 
         socket.on("close", () => {
             console.log("client disconnected")
+            const clientKey = Object.keys(clients).find(key => key.split('-')[1] === ip)
+            console.log(clientKey)
+            if (clientKey) delete clients[clientKey]
+            
             socket.terminate()
-
-            // Broken removal process
-            // console.log(groups[groupId][groups[groupId].indexOf(username)])
-
-            const currentClient = Object.keys(clients).find(key => clients[key] === socket)
-            delete clients[currentClient]
-            console.log(Object.keys(clients))
         })
 
     })

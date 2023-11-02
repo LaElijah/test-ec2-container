@@ -12,33 +12,20 @@ export default avro.Type.forSchema({
             type: 'string'
         },
         {
-            name: 'username',
+            name: "sender",
+            type: 'string'
+        },
+        {
+            name: 'receiver',
             type: 'string'
         },
         {
             name: 'type',
             type: 'string'
+        },
+        {
+            name: 'timestamp',
+            type: 'string'
         }
-        
-        // {
-        //     name: 'groupId',
-        //     type: 'string'
-        // },
-        // {
-        //     name: 'from',
-        //     type: 'string'
-        // },
-        // {
-        //     name: 'to',
-        //     type: 'string'
-        // },
-        // {
-        //     name: 'message',
-        //     type: 'string'
-        // },
-        // {
-        //     name: 'timestamp',
-        //     type: 'string'
-        // }
     ]
 });
