@@ -13,7 +13,7 @@ services:
     image: certbot/certbot:latest
     volumes:
       - ./data/certbot:/etc/letsencrypt
-    command: certonly --standalone --email example@example.com --agree-tos --domain hostbus.crabdance.com
+    command: certonly --standalone --email elijah.allotey.w@gmail.com --agree-tos --domain hostbus.crabdance.com
 
   kafka: 
     image: "bitnami/kafka:latest"
