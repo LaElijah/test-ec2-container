@@ -23,7 +23,7 @@ services:
   node:
     image: "node:latest"
     ports:
-      - "80:4000"
+      - "8080:4000"
     environment: 
       - KAFKA_HOST=kafka:9092
       - PUBLIC_HOST=54.209.121.134
