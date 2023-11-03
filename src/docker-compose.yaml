@@ -1,5 +1,20 @@
 version: "3.7"
 services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./data/nginx:/etc/nginx/conf.d
+      - ./data/certbot:/etc/letsencrypt
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./data/certbot:/etc/letsencrypt
+    command: certonly --standalone --email example@example.com --agree-tos --domain hostbus.crabdance.com
+
   kafka: 
     image: "bitnami/kafka:latest"
     container_name: "kafka"
@@ -23,7 +38,7 @@ services:
   node:
     image: "node:latest"
     ports:
-      - "80:4000"
+      - "4000:4000"
     environment: 
       - KAFKA_HOST=kafka:9092
       - PUBLIC_HOST=54.209.121.134
