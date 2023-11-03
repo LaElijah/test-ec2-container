@@ -8,12 +8,14 @@ services:
     volumes:
       - ./data/nginx:/etc/nginx/conf.d
       - ./data/certbot:/etc/letsencrypt
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
 
   certbot:
     image: certbot/certbot:latest
     volumes:
       - ./data/certbot:/etc/letsencrypt
     command: certonly --standalone --email elijah.allotey.w@gmail.com --agree-tos --domain hostbus.crabdance.com
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
   kafka: 
     image: "bitnami/kafka:latest"
