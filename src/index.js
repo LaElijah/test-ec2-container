@@ -12,7 +12,7 @@ dotenv.config();
 
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const port = process.env.PORT || 4000
+const port = process.env.PORT || 8080
 
 console.log("Booting up server")
 
