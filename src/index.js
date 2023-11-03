@@ -151,7 +151,7 @@ setTimeout(() => {
 
                 clients[`${sender}&${ip}`] = socket
                
-                if (groups[groupId] && groups[groupId].indexOf(`${sender}&${ip}`) === -1) groups[groupId] = [...groups[groupId], `${sender}-${ip}`]
+                if (groups[groupId] && groups[groupId].indexOf(`${sender}&${ip}`) === -1) groups[groupId] = [...groups[groupId], `${sender}&${ip}`]
                 else if (!groups[groupId]) groups[groupId] = [`${sender}&${ip}`]
                 console.log(groups)
                 
