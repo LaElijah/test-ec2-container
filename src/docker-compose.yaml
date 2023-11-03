@@ -1,6 +1,7 @@
 version: "3.7"
 services:
   nginx:
+    restart: unless-stopped
     image: nginx:latest
     ports:
       - "80:80"
@@ -12,6 +13,7 @@ services:
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
 
   certbot:
+    restart: unless-stopped
     image: certbot/certbot:latest
     volumes:
       - ./data/certbot/conf:/etc/letsencrypt
