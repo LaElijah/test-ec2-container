@@ -62,7 +62,7 @@ setTimeout(() => {
                 case "message":
 
                 // if client is found i can do this by splitting of the username and checking if its a key within the clients object
-                const clientNames = Object.keys(clients).map(key => key.split('-')[0])
+                const clientNames = Object.keys(clients).map(key => key.split('&')[0])
 
                 if (clientNames.find((name) => name === event.receiver)) // If the server finds the receiver on the clients map
                     groups[event.groupId].forEach((client) => {
@@ -71,7 +71,7 @@ setTimeout(() => {
                         // change this back to a not equal check
 
                         
-                        if (client.split('-')[0] !== event.sender) {
+                        if (client.split('&')[0] !== event.sender) {
                             console.log("sending")
                             clients[client].send(JSON.stringify({
                             type: "message",
@@ -154,10 +154,10 @@ setTimeout(() => {
                 let sender = decodedMessage.payload.sender
                 let groupId = decodedMessage.payload.groupId
 
-                clients[`${sender}-${ip}`] = socket
+                clients[`${sender}&${ip}`] = socket
                
-                if (groups[groupId] && groups[groupId].indexOf(`${sender}-${ip}`) === -1) groups[groupId] = [...groups[groupId], `${sender}-${ip}`]
-                else if (!groups[groupId]) groups[groupId] = [`${sender}-${ip}`]
+                if (groups[groupId] && groups[groupId].indexOf(`${sender}&${ip}`) === -1) groups[groupId] = [...groups[groupId], `${sender}&${ip}`]
+                else if (!groups[groupId]) groups[groupId] = [`${sender}&${ip}`]
                 console.log(groups)
                 
 
@@ -188,7 +188,7 @@ setTimeout(() => {
 
         socket.on("close", () => {
             console.log("client disconnected")
-            const clientKey = Object.keys(clients).find(key => key.split('-')[1] === ip)
+            const clientKey = Object.keys(clients).find(key => key.split('&')[1] === ip)
             console.log(clientKey)
             if (clientKey) delete clients[clientKey]
             
