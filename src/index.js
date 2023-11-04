@@ -176,8 +176,7 @@ wsServer.on("connection", async (socket, req) => {
             }
 
             case "message": {
-                let {metadata, ...msgEvent} = decodedMessage
-                await queueEvent(msgEvent, "messaging-service")
+                await queueEvent(decodedMessage, "messaging-service")
             }
             // if the reciver is not on the server, send the event to the notification bus too 
             // if (!clients[decodedMessage.payload.receiver]) await queueEvent(decodedMessage.payload, "notification-service")

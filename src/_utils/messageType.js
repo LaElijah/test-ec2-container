@@ -26,6 +26,10 @@ export default avro.Type.forSchema({
         {
             name: 'timestamp',
             type: 'string'
+        },
+        {
+            name: 'metadata',
+            type: 'string'
         }
     ]
 });
