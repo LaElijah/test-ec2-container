@@ -146,38 +146,42 @@ wsServer.on("connection", async (socket, req) => {
         console.log("message here", sender)
 
         switch (type) {
-            case "handshake": {
-                let { sender, groupId } = decodedMessage
+            case "handshake":
+                {
+                    let { sender, groupId } = decodedMessage
 
-                clients[`${sender}&${ip}`] = socket
+                    clients[`${sender}&${ip}`] = socket
 
-                if (groups[groupId] && groups[groupId].indexOf(`${sender}&${ip}`) === -1) groups[groupId] = [...groups[groupId], `${sender}&${ip}`]
-                else if (!groups[groupId]) groups[groupId] = [`${sender}&${ip}`]
-                console.log(groups)
-
-
-
-                // Implementing this to get benifits from horizontal scaling
-                // Needs sticky sessions to get benifits
+                    if (groups[groupId] && groups[groupId].indexOf(`${sender}&${ip}`) === -1) groups[groupId] = [...groups[groupId], `${sender}&${ip}`]
+                    else if (!groups[groupId]) groups[groupId] = [`${sender}&${ip}`]
+                    console.log(groups)
 
 
-                // tells client whos in the group right now
-                groups[groupId].forEach((client) => {
-                    // add a notification function here for if the client ready state is closed so make it an else statement
-                    if (clients[client]?.readyState === ws.OPEN) {
-                        clients[client].send(JSON.stringify({
-                            type: "members",
-                            members: groups[groupId]
-                        }))
-                    }
-                })
+
+                    // Implementing this to get benifits from horizontal scaling
+                    // Needs sticky sessions to get benifits
 
 
-            }
+                    // tells client whos in the group right now
+                    groups[groupId].forEach((client) => {
+                        // add a notification function here for if the client ready state is closed so make it an else statement
+                        if (clients[client]?.readyState === ws.OPEN) {
+                            clients[client].send(JSON.stringify({
+                                type: "members",
+                                members: groups[groupId]
+                            }))
+                        }
+                    })
 
-            case "message": {
-                await queueEvent(decodedMessage, "messaging-service")
-            }
+
+                }
+                break;
+
+            case "message":
+                {
+                    await queueEvent(decodedMessage, "messaging-service")
+                }
+                break;
             // if the reciver is not on the server, send the event to the notification bus too 
             // if (!clients[decodedMessage.payload.receiver]) await queueEvent(decodedMessage.payload, "notification-service")
         }
