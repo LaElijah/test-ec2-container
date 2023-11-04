@@ -69,6 +69,7 @@ setTimeout(() => {
                         
                         if (client.split('&')[0] !== event.sender) {
                             console.log("sending")
+                            if (clients[client]?.readyState === ws.OPEN) {
                             clients[client].send(JSON.stringify({
                             type: "message",
                             payload: event
