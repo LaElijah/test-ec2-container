@@ -73,7 +73,7 @@ setTimeout(() => {
                             clients[client].send(JSON.stringify({
                             type: "message",
                             payload: event
-                        }))}
+                        }))}}
                     })
                 // To let the user know their message was a suuccess, might be better off sending a notification eevnt 
                 // clients[event.username].send(JSON.stringify({
