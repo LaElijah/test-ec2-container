@@ -164,7 +164,7 @@ setTimeout(() => {
                 // tells client whos in the group right now
                 groups[groupId].forEach((client) => {
                     // add a notification function here for if the client ready state is closed so make it an else statement
-                    if (clients[client].readyState === ws.OPEN) {
+                    if (clients[client]?.readyState === ws.OPEN) {
                         clients[client].send(JSON.stringify({
                             type: "clients",
                             payload: groups[groupId]
