@@ -52,10 +52,13 @@ consumer.run({
             case "message":
                 // const hostUser = await User.find({ username: event.sender })
                 // const receiverUser = await User.find({ username: event.receiver })
+                console.log("message here")
                 const dbGroup = await Group.findById(event.groupId)
 
                 // if client is found i can do this by splitting of the username and checking if its a key within the clients object
                 const clientNames = Object.keys(clients).map(key => key.split('&')[0])
+
+                console.log("still working")
 
                 if (clientNames.find((name) => name === event.receiver)) {
                     groups[event.groupId].forEach(async (client) => {
