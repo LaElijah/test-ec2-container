@@ -43,7 +43,7 @@ consumer.subscribe({ topic: 'notification-service', fromBeginning: true })
 
 consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
-    
+
         const event = eventType.fromBuffer(message.value)
 
         switch (event.type) {
@@ -139,10 +139,11 @@ const httpServer = app.listen(port, async () => {
 // TODO: Update this to run on routes for seperation of notifications and messages sockets
 const wsServer = new WebSocketServer({ noServer: true })
 
+const heartbeat = (ws) => ws.isAlive = true
 
 wsServer.on("connection", async (socket, req) => {
     let ip = req.socket.remoteAddress
-    
+
 
     socket.on("message", async (msg) => {
 
@@ -155,33 +156,33 @@ wsServer.on("connection", async (socket, req) => {
                 {
                     let { sender, groupId } = decodedMessage
                     if (groupId !== "none") {
-                    const key = `${sender}&${ip}`
+                        const key = `${sender}&${ip}`
 
-                    clients[key] = socket
+                        clients[key] = socket
 
-                    if (groups[groupId] && groups[groupId].indexOf(key) === -1) groups[groupId] = [...groups[groupId], key]
-                    else if (!groups[groupId]) groups[groupId] = [key]
-                    
-
-
-                    // Implementing this to get benifits from horizontal scaling
-                    // Needs sticky sessions to get benifits
+                        if (groups[groupId] && groups[groupId].indexOf(key) === -1) groups[groupId] = [...groups[groupId], key]
+                        else if (!groups[groupId]) groups[groupId] = [key]
 
 
-                    // tells client whos in the group right now
-                    console.log("groups", groups)
-                    groups[groupId].forEach((client) => {
-                      
-                        // add a notification function here for if the client ready state is closed so make it an else statement
-                        if (clients[client]?.readyState === ws.OPEN) {
-                            clients[client].send(JSON.stringify({
-                                type: "members",
-                                members: groups[groupId]
-                            }))
-                        }
-                    })
 
-                }
+                        // Implementing this to get benifits from horizontal scaling
+                        // Needs sticky sessions to get benifits
+
+
+                        // tells client whos in the group right now
+                        console.log("groups", groups)
+                        groups[groupId].forEach((client) => {
+
+                            // add a notification function here for if the client ready state is closed so make it an else statement
+                            if (clients[client]?.readyState === ws.OPEN) {
+                                clients[client].send(JSON.stringify({
+                                    type: "members",
+                                    members: groups[groupId]
+                                }))
+                            }
+                        })
+
+                    }
 
 
                 }
@@ -197,7 +198,7 @@ wsServer.on("connection", async (socket, req) => {
         }
     })
 
-   socket.on("ping", (message) => console.log(message))
+    socket.on("pong", heartbeat)
 
 
     socket.on("close", () => {
@@ -205,7 +206,7 @@ wsServer.on("connection", async (socket, req) => {
 
         const clientKey = Object.keys(clients).find(key => key.split('&')[1] === ip)
         if (clientKey) delete clients[clientKey]
-        
+
 
         socket.terminate()
     })
@@ -215,17 +216,27 @@ wsServer.on("connection", async (socket, req) => {
 
         const clientKey = Object.keys(clients).find(key => key.split('&')[1] === ip)
         if (clientKey) delete clients[clientKey]
-        
+
         socket.terminate()
     })
 
-    socket.timer = setInterval(() => {
-        console.log("pinging")
-        ws.ping('PING',{},true);
-    },30000);
+
 
 
 })
+
+const interval = setInterval(function ping() {
+    wss.clients.forEach((ws) => {
+        if (ws.isAlive === false) return ws.terminate();
+
+        ws.isAlive = false;
+        ws.ping();
+    });
+}, 30000);
+
+wss.on('close', function close() {
+    clearInterval(interval);
+});
 
 
 
