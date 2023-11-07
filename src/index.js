@@ -151,12 +151,14 @@ wsServer.on("connection", async (socket, req) => {
             case "handshake":
                 {
                     let { sender, groupId } = decodedMessage
+                    const key = `${sender}&${ip}`
+                    console.log(key)
 
-                    clients[`${sender}&${ip}`] = socket
+                    clients[key] = socket
 
-                    if (groups[groupId] && groups[groupId].indexOf(`${sender}&${ip}`) === -1) groups[groupId] = [...groups[groupId], `${sender}&${ip}`]
-                    else if (!groups[groupId]) groups[groupId] = [`${sender}&${ip}`]
-                    console.log(groups)
+                    if (groups[groupId] && groups[groupId].indexOf(key) === -1) groups[groupId] = [...groups[groupId], key]
+                    else if (!groups[groupId]) groups[groupId] = [key]
+                    
 
 
                     // Implementing this to get benifits from horizontal scaling
