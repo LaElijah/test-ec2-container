@@ -199,6 +199,7 @@ wsServer.on("connection", async (socket, req) => {
 
 
     socket.on("close", () => {
+        console.log("Client disconnected")
 
         const clientKey = Object.keys(clients).find(key => key.split('&')[1] === ip)
         if (clientKey) delete clients[clientKey]
@@ -207,7 +208,8 @@ wsServer.on("connection", async (socket, req) => {
         socket.terminate()
     })
 
-    socket.on("error", () => {
+    socket.on("error", (error) => {
+        console.log("Error", error)
 
         const clientKey = Object.keys(clients).find(key => key.split('&')[1] === ip)
         if (clientKey) delete clients[clientKey]
