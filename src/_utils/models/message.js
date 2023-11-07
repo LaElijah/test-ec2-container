@@ -4,7 +4,6 @@ const { Schema } = mongoose;
 
 const messageSchema = new Schema({
   sender: String,
-  receiever: String,
   groupId: String,
   type: String,
   message: String,
