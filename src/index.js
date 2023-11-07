@@ -74,6 +74,7 @@ consumer.run({
                 }
 
                 // Update user history here
+                console.log("Updating history")
                 dbGroup.messages.push({ ...event })
                 await dbGroup.save()
         }
@@ -206,7 +207,7 @@ wsServer.on("connection", async (socket, req) => {
 
         const clientKey = Object.keys(clients).find(key => key.split('&')[1] === ip)
         if (clientKey) delete clients[clientKey]
-
+        clearInterval(socket.timer);
 
         socket.terminate()
     })
