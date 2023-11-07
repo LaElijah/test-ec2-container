@@ -151,6 +151,7 @@ wsServer.on("connection", async (socket, req) => {
         const decodedMessage = JSON.parse(msg.toString())
         let { sender, type } = decodedMessage
         console.log("message here", sender)
+        console.log(decodedMessage)
 
         switch (type) {
             case "handshake":
