@@ -175,6 +175,7 @@ wsServer.on("connection", async (socket, req) => {
                     // tells client whos in the group right now
                     console.log("groups", groups)
                     groups[groupId].forEach((client) => {
+                        console.log("hi", clients[client])
                         // add a notification function here for if the client ready state is closed so make it an else statement
                         if (clients[client]?.readyState === ws.OPEN) {
                             clients[client].send(JSON.stringify({
