@@ -44,7 +44,7 @@ consumer.subscribe({ topic: 'notification-service', fromBeginning: true })
 consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
         const event = eventType.fromBuffer(message.value)
-        console.log(message.value)
+        console.log(event)
 
         switch (event.type) {
 
