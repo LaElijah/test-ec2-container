@@ -17,7 +17,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT || 8080
 
 const clients = {}
-const groups = {}
+const groups = new Map()
 
 const app = express();
 
@@ -58,8 +58,8 @@ consumer.run({
 
                 console.log(clientNames)
 
-                if (groups[event.groupId]) {
-                    groups[event.groupId].forEach(async (client) => {
+                if (groups.get(event.groupId)) {
+                    groups.get(event.groupId).forEach(async (client) => {
 
                         if (client.split('&')[0] !== event.sender
                             && clients[client]?.readyState === ws.OPEN
@@ -160,10 +160,9 @@ wsServer.on("connection", async (socket, req) => {
                         const key = `${sender}&${ip}`
 
                         clients[key] = socket
-                        console.log("found group ", (groups[groupId] && groups[groupId].indexOf(key) === -1))
 
-                        if (groups[groupId] && groups[groupId].indexOf(key) === -1) groups[groupId] = [...groups[groupId], key]
-                        else if (!groups[groupId]) groups[groupId] = [key]
+                        if (groups[groupId]) groups.set(groupId, new Set([...Array.from(groups.get(groupId)), key]))
+                        else groups.set(groupId, new Set(key))
 
 
 
@@ -173,13 +172,13 @@ wsServer.on("connection", async (socket, req) => {
 
                         // tells client whos in the group right now
                         console.log("groups", groups)
-                        groups[groupId].forEach((client) => {
+                        groups.get(groupId).forEach((client) => {
 
                             // add a notification function here for if the client ready state is closed so make it an else statement
                             if (clients[client]?.readyState === ws.OPEN) {
                                 clients[client].send(JSON.stringify({
                                     type: "members",
-                                    members: groups[groupId]
+                                    members: groups.get(groupId)m
                                 }))
                             }
                         })
