@@ -203,13 +203,13 @@ wsServer.on("connection", async (socket, req) => {
     })
 
 
-    let processingDisconnect = false
+    let processedDisconnect = false
 
     socket.on("close", () => {
-        processingDisconnect = true
+        
         console.log("Client disconnected")
         console.log("pre delete", clients.keys())
-        if (!processingDisconnect) { 
+        if (!processedDisconnect) { 
         const clientKey = Array.from(clients.keys()).find(key => key.split('&')[1] === ip)
         if (clientKey) clients.delete(clientKey)
         clearInterval(socket.timer);
@@ -217,8 +217,10 @@ wsServer.on("connection", async (socket, req) => {
         socket.terminate()
         }
 
+        processedDisconnect = true
+
         setTimeout(() => {
-            processingDisconnect = false
+            processedDisconnect = false
         }, 1000)
     })
 
