@@ -179,6 +179,7 @@ wsServer.on("connection", async (socket, req) => {
 
                             // add a notification function here for if the client ready state is closed so make it an else statement
                             if (clients.get(client)?.readyState === ws.OPEN) {
+                                console.log("sender", clients.get(client))
                                 clients.get(client).send(JSON.stringify({
                                     type: "members",
                                     members: groups.get(groupId)
