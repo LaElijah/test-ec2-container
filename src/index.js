@@ -45,6 +45,7 @@ consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
 
         const event = eventType.fromBuffer(message.value)
+        console.log("got message 48")
 
         switch (event.type) {
 

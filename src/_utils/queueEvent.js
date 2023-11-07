@@ -41,6 +41,7 @@ export default async function queueEvent(event, topic) {
     });
 
     if (success) {
+        console.log(success)
         console.log("Message queued successfully");
     } else {
         console.log("Message queue failed");
