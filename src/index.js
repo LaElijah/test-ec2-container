@@ -226,7 +226,7 @@ wsServer.on("connection", async (socket, req) => {
 })
 
 const interval = setInterval(function ping() {
-    wss.clients.forEach((ws) => {
+    wsServer.clients.forEach((ws) => {
         if (ws.isAlive === false) return ws.terminate();
 
         ws.isAlive = false;
@@ -234,7 +234,7 @@ const interval = setInterval(function ping() {
     });
 }, 30000);
 
-wss.on('close', function close() {
+wsServer.on('close', function close() {
     clearInterval(interval);
 });
 
