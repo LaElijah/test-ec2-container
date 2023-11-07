@@ -160,6 +160,7 @@ wsServer.on("connection", async (socket, req) => {
                         const key = `${sender}&${ip}`
 
                         clients[key] = socket
+                        console.log("found group ", (groups[groupId] && groups[groupId].indexOf(key) === -1))
 
                         if (groups[groupId] && groups[groupId].indexOf(key) === -1) groups[groupId] = [...groups[groupId], key]
                         else if (!groups[groupId]) groups[groupId] = [key]
