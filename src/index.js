@@ -45,6 +45,7 @@ consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
     
         const event = eventType.fromBuffer(message.value)
+        console.log(event)
 
         switch (event.type) {
 
@@ -140,6 +141,7 @@ const wsServer = new WebSocketServer({ noServer: true })
 
 wsServer.on("connection", async (socket, req) => {
     let ip = req.socket.remoteAddress
+    
 
     socket.on("message", async (msg) => {
 
