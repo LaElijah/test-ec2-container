@@ -178,7 +178,7 @@ wsServer.on("connection", async (socket, req) => {
                             if (clients[client]?.readyState === ws.OPEN) {
                                 clients[client].send(JSON.stringify({
                                     type: "members",
-                                    members: groups.get(groupId)m
+                                    members: groups.get(groupId)
                                 }))
                             }
                         })
