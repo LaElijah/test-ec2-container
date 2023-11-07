@@ -197,6 +197,8 @@ wsServer.on("connection", async (socket, req) => {
         }
     })
 
+   socket.on("ping", (message) => console.log(message))
+
 
     socket.on("close", () => {
         console.log("Client disconnected")
@@ -216,6 +218,11 @@ wsServer.on("connection", async (socket, req) => {
         
         socket.terminate()
     })
+
+    socket.timer = setInterval(() => {
+        console.log("pinging")
+        ws.ping('PING',{},true);
+    },30000);
 
 
 })
