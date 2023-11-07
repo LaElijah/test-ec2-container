@@ -156,6 +156,7 @@ wsServer.on("connection", async (socket, req) => {
             case "handshake":
                 {
                     let { sender, groupId } = decodedMessage
+                    if (groupId !== "none") {
                     console.log("msg", decodedMessage)
                     const key = `${sender}&${ip}`
 
@@ -181,6 +182,8 @@ wsServer.on("connection", async (socket, req) => {
                             }))
                         }
                     })
+
+                }
 
 
                 }
