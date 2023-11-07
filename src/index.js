@@ -156,6 +156,7 @@ wsServer.on("connection", async (socket, req) => {
 
                     if (groups[groupId] && groups[groupId].indexOf(`${sender}&${ip}`) === -1) groups[groupId] = [...groups[groupId], `${sender}&${ip}`]
                     else if (!groups[groupId]) groups[groupId] = [`${sender}&${ip}`]
+                    console.log(groups)
 
 
                     // Implementing this to get benifits from horizontal scaling
