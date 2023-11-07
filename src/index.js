@@ -217,28 +217,16 @@ wsServer.on("connection", async (socket, req) => {
         const clientKey = Object.keys(clients).find(key => key.split('&')[1] === ip)
         if (clientKey) delete clients[clientKey]
 
+        clearInterval(socket.timer);
         socket.terminate()
     })
+
+    socket.timer = setInterval(() => socket.ping(), 30000)
 
 
 
 
 })
-
-const interval = setInterval(function ping() {
-    wsServer.clients.forEach((ws) => {
-        if (ws.isAlive === false) return ws.terminate();
-
-        ws.isAlive = false;
-        ws.ping();
-    });
-}, 30000);
-
-wsServer.on('close', function close() {
-    clearInterval(interval);
-});
-
-
 
 
 httpServer.on("upgrade", (req, socket, head) => {
