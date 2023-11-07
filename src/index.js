@@ -45,20 +45,18 @@ consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
     
         const event = eventType.fromBuffer(message.value)
-        console.log(event)
 
         switch (event.type) {
 
             case "message":
                 // const hostUser = await User.find({ username: event.sender })
                 // const receiverUser = await User.find({ username: event.receiver })
-                console.log("message here")
                 const dbGroup = await Group.findById(event.groupId)
 
                 // if client is found i can do this by splitting of the username and checking if its a key within the clients object
                 const clientNames = Object.keys(clients).map(key => key.split('&')[0])
 
-                console.log("still working")
+                console.log(clientNames)
 
                 if (clientNames.find((name) => name === event.receiver)) {
                     groups[event.groupId].forEach(async (client) => {
@@ -151,14 +149,12 @@ wsServer.on("connection", async (socket, req) => {
         const decodedMessage = JSON.parse(msg.toString())
         let { sender, type } = decodedMessage
         console.log("message here", sender)
-        console.log(decodedMessage)
 
         switch (type) {
             case "handshake":
                 {
                     let { sender, groupId } = decodedMessage
                     if (groupId !== "none") {
-                    console.log("msg", decodedMessage)
                     const key = `${sender}&${ip}`
 
                     clients[key] = socket
@@ -175,7 +171,7 @@ wsServer.on("connection", async (socket, req) => {
                     // tells client whos in the group right now
                     console.log("groups", groups)
                     groups[groupId].forEach((client) => {
-                        console.log("hi", clients[client])
+                       console.log("hi")
                         // add a notification function here for if the client ready state is closed so make it an else statement
                         if (clients[client]?.readyState === ws.OPEN) {
                             clients[client].send(JSON.stringify({
