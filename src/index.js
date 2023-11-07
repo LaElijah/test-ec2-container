@@ -162,7 +162,7 @@ wsServer.on("connection", async (socket, req) => {
                         clients[key] = socket
 
                         if (groups[groupId]) groups.set(groupId, new Set([...Array.from(groups.get(groupId)), key]))
-                        else groups.set(groupId, new Set(key))
+                        else groups.set(groupId, new Set([key]))
 
 
 
