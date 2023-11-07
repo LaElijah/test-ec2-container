@@ -45,7 +45,6 @@ consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
     
         const event = eventType.fromBuffer(message.value)
-        console.log(event)
 
         switch (event.type) {
 
@@ -63,6 +62,7 @@ consumer.run({
                         if (client.split('&')[0] !== event.sender
                             && clients[client]?.readyState === ws.OPEN
                         ) {
+                            console.log("sending")
                             clients[client].send(JSON.stringify({
                                 type: "message",
                                 payload: event
@@ -156,8 +156,6 @@ wsServer.on("connection", async (socket, req) => {
 
                     if (groups[groupId] && groups[groupId].indexOf(`${sender}&${ip}`) === -1) groups[groupId] = [...groups[groupId], `${sender}&${ip}`]
                     else if (!groups[groupId]) groups[groupId] = [`${sender}&${ip}`]
-                    console.log(groups)
-
 
 
                     // Implementing this to get benifits from horizontal scaling
@@ -194,7 +192,7 @@ wsServer.on("connection", async (socket, req) => {
 
         const clientKey = Object.keys(clients).find(key => key.split('&')[1] === ip)
         if (clientKey) delete clients[clientKey]
-        console.log("client disconnected", "Current clients: ", clients)
+        
 
         socket.terminate()
     })
@@ -203,8 +201,7 @@ wsServer.on("connection", async (socket, req) => {
 
         const clientKey = Object.keys(clients).find(key => key.split('&')[1] === ip)
         if (clientKey) delete clients[clientKey]
-        console.log("client disconnected", "Current clients: ", clients)
-
+        
         socket.terminate()
     })
 
