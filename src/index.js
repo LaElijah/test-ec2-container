@@ -221,7 +221,10 @@ wsServer.on("connection", async (socket, req) => {
         socket.terminate()
     })
 
-    socket.timer = setInterval(() => socket.ping(), 30000)
+    socket.timer = setInterval(() => {
+        console.log("pinging")
+        socket.ping()
+    }, 30000)
 
 
 
