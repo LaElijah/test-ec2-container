@@ -3,13 +3,14 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const groupSchema = new Schema({
-  users: [
+  groupName: String,
+  members: [
     {
       type: Schema.Types.ObjectId,
       ref: "User",
     },
   ],
-  requestedUsers: [
+  requestedMembers: [
     {
       type: Schema.Types.ObjectId,
       ref: "User",
@@ -21,12 +22,9 @@ const groupSchema = new Schema({
       ref: "User",
     },
   ],
-  messages: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Message",
-    },
-  ],
+  messages: [],
+  latestActive: String,
+  latestAction: String
 });
 
 export default mongoose.models.Group || mongoose.model("Group", groupSchema);
