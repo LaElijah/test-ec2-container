@@ -206,8 +206,9 @@ wsServer.on("connection", async (socket, req) => {
 
     socket.on("close", () => {
         console.log("Client disconnected")
+        console.log(clients.keys())
 
-        const clientKey = clients.keys().find(key => key.split('&')[1] === ip)
+        const clientKey = Array.from(clients.keys()).find(key => key.split('&')[1] === ip)
         if (clientKey) clients.delete(clientKey)
         clearInterval(socket.timer);
 
