@@ -16,7 +16,7 @@ dotenv.config();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT || 8080
 
-const clients = {}
+const clients = new Map()
 const groups = new Map()
 
 const app = express();
@@ -54,7 +54,7 @@ consumer.run({
                 const dbGroup = await Group.findById(event.groupId)
 
                 // if client is found i can do this by splitting of the username and checking if its a key within the clients object
-                const clientNames = Object.keys(clients).map(key => key.split('&')[0])
+                const clientNames = clients.keys().map(key => key.split('&')[0])
 
                 console.log(clientNames)
 
@@ -62,10 +62,10 @@ consumer.run({
                     groups.get(event.groupId).forEach(async (client) => {
 
                         if (client.split('&')[0] !== event.sender
-                            && clients[client]?.readyState === ws.OPEN
+                            && clients.get(client)?.readyState === ws.OPEN
                         ) {
                             console.log("sending")
-                            clients[client].send(JSON.stringify({
+                            clients.get(client).send(JSON.stringify({
                                 type: "message",
                                 payload: event
                             }))
@@ -140,7 +140,6 @@ const httpServer = app.listen(port, async () => {
 // TODO: Update this to run on routes for seperation of notifications and messages sockets
 const wsServer = new WebSocketServer({ noServer: true })
 
-const heartbeat = (ws) => ws.isAlive = true
 
 wsServer.on("connection", async (socket, req) => {
     let ip = req.socket.remoteAddress
@@ -159,7 +158,12 @@ wsServer.on("connection", async (socket, req) => {
                     if (groupId !== "none") {
                         const key = `${sender}&${ip}`
 
-                        clients[key] = socket
+                        
+                        console.log("past", clients)
+
+                        clients.set(key, socket)
+
+                        console.log("now", clients)
 
                         if (groups.get(groupId)) groups.set(groupId, new Set([...Array.from(groups.get(groupId)), key]))
                         else groups.set(groupId, new Set([key]))
@@ -171,12 +175,11 @@ wsServer.on("connection", async (socket, req) => {
 
 
                         // tells client whos in the group right now
-                        console.log("groups", groups)
                         groups.get(groupId).forEach((client) => {
 
                             // add a notification function here for if the client ready state is closed so make it an else statement
-                            if (clients[client]?.readyState === ws.OPEN) {
-                                clients[client].send(JSON.stringify({
+                            if (clients.get(client)?.readyState === ws.OPEN) {
+                                clients.get(client).send(JSON.stringify({
                                     type: "members",
                                     members: groups.get(groupId)
                                 }))
@@ -199,28 +202,27 @@ wsServer.on("connection", async (socket, req) => {
         }
     })
 
-    socket.on("pong", heartbeat)
 
 
     socket.on("close", () => {
         console.log("Client disconnected")
 
-        const clientKey = Object.keys(clients).find(key => key.split('&')[1] === ip)
-        if (clientKey) delete clients[clientKey]
+        const clientKey = clients.keys().find(key => key.split('&')[1] === ip)
+        if (clientKey) clients.delete(clientKey)
         clearInterval(socket.timer);
 
         socket.terminate()
     })
 
-    socket.on("error", (error) => {
-        console.log("Error", error)
+    // socket.on("error", (error) => {
+    //     console.log("Error", error)
 
-        const clientKey = Object.keys(clients).find(key => key.split('&')[1] === ip)
-        if (clientKey) delete clients[clientKey]
+    //     const clientKey = Object.keys(clients).find(key => key.split('&')[1] === ip)
+    //     if (clientKey) delete clients[clientKey]
 
-        clearInterval(socket.timer);
-        socket.terminate()
-    })
+    //     clearInterval(socket.timer);
+    //     socket.terminate()
+    // })
 
     socket.timer = setInterval(() => {
         console.log("pinging")
