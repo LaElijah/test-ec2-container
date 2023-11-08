@@ -48,7 +48,7 @@ export class Queue {
 
 
 export default class CallLimiter extends Queue {
-    timeToClear = 1000
+    timeToClear = 10000
     calling = false
 
     constructor(limit = 1, timeToClear, startingArray) {
