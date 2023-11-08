@@ -6,26 +6,26 @@ export class Queue {
 
     constructor(limit, startingArray) {
         if (limit) this.limit = limit
-        
+
         if (startingArray) {
             let workingArray = []
-            let workingLimit = (this.limit || 20) -1
+            let workingLimit = (this.limit || 20) - 1
             let totalLimit = (startingArray.length < workingLimit) ? startingArray.length : workingLimit
-            
+
             for (let i = 0; i <= totalLimit; i++) {
                 let element = startingArray.reverse()[i]
                 if (element) workingArray.push(element)
             }
             this.store = [...workingArray]
         } else this.store = []
-        
+
     }
 
     add(element) {
-    
-     
+
+
         let limit = this.limit || 20
-     
+
         if (this.store.length >= limit) {
             let workingStore = [...this.store]
             workingStore.shift()
@@ -39,27 +39,33 @@ export class Queue {
         }
     }
 
-    
+
     get queue() {
         return [...this.store]
     }
-    
+
 }
 
 
 export default class CallLimiter extends Queue {
     timeToClear = 1000
+    calling = false
 
     constructor(limit = 1, timeToClear, startingArray) {
         super(limit, startingArray)
         this.timeToClear = timeToClear
+
     }
 
     call() {
-        this.store[0]()
-        setTimeout(() => {
-            this.clear()
-        }, this.timeToClear)
+        if (!this.calling) {
+            this.store[0]()
+            this.calling = true
+            setTimeout(() => {
+                this.clear()
+                this.calling = false
+            }, this.timeToClear)
+        }
     }
 
     clear() {
@@ -67,9 +73,17 @@ export default class CallLimiter extends Queue {
     }
 
     sequence() {
-        this.store[0]()
-        setTimeout(() => {
-            this.store.shift()
-        }, this.timeToClear)
+        // TODO: Add feature that calls next function adter calling is false again
+        // maybe i could do it with a counter to iterate and call up to that point
+        // and maybe i could do an event listener to listen for ending of calls 
+        // like an event listener that calls a method called say sequenceCaller
+        // and it iterates and shifts through the call list up until the 
+        // counter number is reached 
+        if (!this.calling) {
+            this.store[0]()
+            setTimeout(() => {
+                this.store.shift()
+            }, this.timeToClear)
+        }
     }
 }
