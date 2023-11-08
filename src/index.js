@@ -1,7 +1,6 @@
 import express from 'express';
 import { WebSocketServer } from 'ws';
 import ws from 'ws';
-import User from './_utils/models/user.js';
 import Group from './_utils/models/group.js';
 import { Kafka } from 'kafkajs';
 import eventType from './_utils/messageType.js';
@@ -10,7 +9,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dbConnection from './_utils/db/dbConnection.js';
 import dotenv from 'dotenv';
-import CallLimiter from './_utils/callLimiter.js';
 dotenv.config();
 
 
@@ -37,7 +35,6 @@ const app = express();
 function removeClient(clientKey, socket) {
     if (clientKey) clients.delete(clientKey)
     clearInterval(socket.timer);
-    console.log("post delete", clients.keys())
     socket.terminate()
     }
 
@@ -64,7 +61,7 @@ consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
 
         const event = eventType.fromBuffer(message.value)
-        console.log("got message 48")
+       
 
         switch (event.type) {
 
@@ -84,7 +81,7 @@ consumer.run({
                         if (client.split('&')[0] !== event.sender
                             && clients.get(client)?.readyState === ws.OPEN
                         ) {
-                            console.log("sending")
+                          
                             clients.get(client).send(JSON.stringify({
                                 type: "message",
                                 payload: event
@@ -94,9 +91,8 @@ consumer.run({
                 }
 
                 // Update user history here
-                console.log("Updating history")
                 dbGroup.messages.push({ ...event })
-                await dbGroup.save()
+                console.log("update status", await dbGroup.save())
         }
 
     }
@@ -169,7 +165,7 @@ wsServer.on("connection", async (socket, req) => {
 
         const decodedMessage = JSON.parse(msg.toString())
         let { sender, type } = decodedMessage
-        console.log("message here", sender)
+        console.log("message sender: ", sender)
 
         switch (type) {
             case "handshake":
@@ -177,13 +173,7 @@ wsServer.on("connection", async (socket, req) => {
                     let { sender, groupId } = decodedMessage
                     if (groupId !== "none") {
                         const key = `${sender}&${ip}`
-
-                        
-                        console.log("past", clients)
-
                         clients.set(key, socket)
-
-                        console.log("now", clients)
 
                         if (groups.get(groupId)) groups.set(groupId, new Set([...Array.from(groups.get(groupId)), key]))
                         else groups.set(groupId, new Set([key]))
@@ -199,7 +189,6 @@ wsServer.on("connection", async (socket, req) => {
 
                             // add a notification function here for if the client ready state is closed so make it an else statement
                             if (clients.get(client)?.readyState === ws.OPEN) {
-                                console.log("sender", clients.get(client))
                                 clients.get(client).send(JSON.stringify({
                                     type: "members",
                                     members: groups.get(groupId)
@@ -226,8 +215,6 @@ wsServer.on("connection", async (socket, req) => {
 
     socket.on("close", () => {
         
-        console.log("Client disconnected")
-        console.log("pre delete", clients.keys())
 
         const clientKey = Array.from(clients.keys()).find(key => key.split('&')[1] === ip)
 
@@ -245,7 +232,6 @@ wsServer.on("connection", async (socket, req) => {
     // })
 
     socket.timer = setInterval(() => {
-        console.log("pinging")
         socket.ping()
     }, 30000)
 
