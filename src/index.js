@@ -36,6 +36,7 @@ function removeClient(clientKey, socket) {
     if (clientKey) clients.delete(clientKey)
     clearInterval(socket.timer);
     socket.terminate()
+    console.log(clients.keys())
 }
 
 const debouncedRemoveClient = debounceLeading(removeClient, 500)
@@ -59,7 +60,7 @@ consumer.subscribe({ topic: 'notification-service', fromBeginning: true })
 
 consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
-        console.log(clients)
+        
 
         const event = eventType.fromBuffer(message.value)
 
@@ -223,6 +224,7 @@ wsServer.on("connection", async (socket, req) => {
         const clientKey = Array.from(clients.keys()).find(key => key.split('&')[1] === ip)
 
         debouncedRemoveClient(clientKey, socket)
+
     })
 
     // socket.on("error", (error) => {
