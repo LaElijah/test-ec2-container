@@ -170,6 +170,7 @@ wsServer.on("connection", async (socket, req) => {
             case "handshake":
                 {
                     let { sender, groupId } = decodedMessage
+                    console.log("hand", decodedMessage)
                     if (groupId !== "none") {
                         const key = `${sender}&${ip}`
                         clients.set(key, socket)
@@ -233,7 +234,7 @@ wsServer.on("connection", async (socket, req) => {
     //     socket.terminate()
     // })
 
-    socket.on("pong", (data) => console.log("Got a pong", data))
+    socket.on("pong", (data) => console.log())
 
     socket.timer = setInterval(() => {
         socket.ping()
