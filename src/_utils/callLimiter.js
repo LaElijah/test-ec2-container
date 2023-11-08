@@ -58,11 +58,15 @@ export default class CallLimiter extends Queue {
     }
 
     call() {
-        if (!this.calling) {
+        // method meant for calling one function once in a period
+        console.log("gonna call")
+        if (!this.calling && this.store.length === 1) {
             this.store[0]()
+            console.log("i just called")
             this.calling = true
+            this.clear()
             setTimeout(() => {
-                this.clear()
+                
                 this.calling = false
             }, this.timeToClear)
         }
