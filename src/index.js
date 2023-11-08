@@ -47,38 +47,38 @@ consumer.run({
         const event = eventType.fromBuffer(message.value)
         console.log("got message 48")
 
-        switch (event.type) {
+        // switch (event.type) {
 
-            case "message":
-                // const hostUser = await User.find({ username: event.sender })
-                // const receiverUser = await User.find({ username: event.receiver })
-                const dbGroup = await Group.findById(event.groupId)
+        //     case "message":
+        //         // const hostUser = await User.find({ username: event.sender })
+        //         // const receiverUser = await User.find({ username: event.receiver })
+        //         const dbGroup = await Group.findById(event.groupId)
 
-                // if client is found i can do this by splitting of the username and checking if its a key within the clients object
-                const clientNames = clients.keys().map(key => key.split('&')[0])
+        //         // if client is found i can do this by splitting of the username and checking if its a key within the clients object
+        //         const clientNames = clients.keys().map(key => key.split('&')[0])
 
-                console.log(clientNames)
+        //         console.log(clientNames)
 
-                if (groups.get(event.groupId)) {
-                    groups.get(event.groupId).forEach(async (client) => {
+        //         if (groups.get(event.groupId)) {
+        //             groups.get(event.groupId).forEach(async (client) => {
 
-                        if (client.split('&')[0] !== event.sender
-                            && clients.get(client)?.readyState === ws.OPEN
-                        ) {
-                            console.log("sending")
-                            clients.get(client).send(JSON.stringify({
-                                type: "message",
-                                payload: event
-                            }))
-                        }
-                    })
-                }
+        //                 if (client.split('&')[0] !== event.sender
+        //                     && clients.get(client)?.readyState === ws.OPEN
+        //                 ) {
+        //                     console.log("sending")
+        //                     clients.get(client).send(JSON.stringify({
+        //                         type: "message",
+        //                         payload: event
+        //                     }))
+        //                 }
+        //             })
+        //         }
 
-                // Update user history here
-                console.log("Updating history")
-                dbGroup.messages.push({ ...event })
-                await dbGroup.save()
-        }
+        //         // Update user history here
+        //         console.log("Updating history")
+        //         dbGroup.messages.push({ ...event })
+        //         await dbGroup.save()
+        // }
 
     }
 })
