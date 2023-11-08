@@ -223,8 +223,13 @@ wsServer.on("connection", async (socket, req) => {
 
 
         const clientKey = Array.from(clients.keys()).find(key => key.split('&')[1] === ip)
+        if (!socket.isClosed) {
 
-        debouncedRemoveClient(clientKey, socket)
+        removeClient(clientKey, socket)
+
+        }
+        console.log(socket.isClosed)
+        socket.isClosed = true
 
     })
 
