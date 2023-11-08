@@ -16,14 +16,29 @@ dotenv.config();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT || 8080
-const caller = new CallLimiter(1)
+const debounce = (callback, wait) => {
+    let timeoutId = null;
+    return (...args) => {
+      window.clearTimeout(timeoutId);
+      timeoutId = window.setTimeout(() => {
+        callback.apply(null, args);
+      }, wait);
+    };
+  };
+  
 const clients = new Map()
 const groups = new Map()
 
 const app = express();
 
+function removeClient(clientKey, socket) {
+    if (clientKey) clients.delete(clientKey)
+    clearInterval(socket.timer);
+    console.log("post delete", clients.keys())
+    socket.terminate()
+    }
 
-
+const debouncedRemoveClient =  debounce(removeClient, 500)
 
 // Kafka event starting
 const kafka = new Kafka({
@@ -211,19 +226,9 @@ wsServer.on("connection", async (socket, req) => {
         console.log("Client disconnected")
         console.log("pre delete", clients.keys())
 
-
-        caller.add(() => {
- 
         const clientKey = Array.from(clients.keys()).find(key => key.split('&')[1] === ip)
-        if (clientKey) clients.delete(clientKey)
-        clearInterval(socket.timer);
-        console.log("post delete", clients.keys())
-        socket.terminate()
-        })
 
-        caller.call()
-    
-
+        debouncedRemoveClient(clientKey, socket)
     })
 
     // socket.on("error", (error) => {
