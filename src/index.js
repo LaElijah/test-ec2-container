@@ -171,6 +171,7 @@ wsServer.on("connection", async (socket, req) => {
 
         switch (type) {
             case "handshake":
+                socket.isClosed = false
 
                 let { sender, groupId } = decodedMessage
                 console.log("hand", decodedMessage)
@@ -181,6 +182,8 @@ wsServer.on("connection", async (socket, req) => {
 
                     if (groups.get(groupId)) groups.set(groupId, new Set([...Array.from(groups.get(groupId)), key]))
                     else groups.set(groupId, new Set([key]))
+
+                    
 
                     console.log("group", groups.get(groupId))
 
@@ -223,6 +226,7 @@ wsServer.on("connection", async (socket, req) => {
 
 
         const clientKey = Array.from(clients.keys()).find(key => key.split('&')[1] === ip)
+
         if (!socket.isClosed) {
 
         removeClient(clientKey, socket)
