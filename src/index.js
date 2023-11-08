@@ -92,7 +92,6 @@ consumer.run({
 
                 // Update user history here
                 dbGroup.messages.push({ ...event })
-                console.log("update status", await dbGroup.save())
         }
 
     }
