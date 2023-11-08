@@ -158,10 +158,24 @@ const httpServer = app.listen(port, async () => {
 // TODO: Update this to run on routes for seperation of notifications and messages sockets
 const wsServer = new WebSocketServer({ noServer: true })
 
+wsServer.on("close", (event) => console.log("server close", event))
+wsServer.on("error", (event) => console.log("error", event))
 
 wsServer.on("connection", async (socket, req) => {
     let ip = req.socket.remoteAddress
 
+    socket.on("unexpected-response", (req, res) => {
+        console.log("unexpected", req, res)
+    })
+
+    socket.on("upgrade", (req) => {
+        console.log("upgrade", req)
+    })
+
+
+    socket.onclose = (event) => console.log("onclose", event)
+    socket.onerror = (event) => console.log("onerror", event)
+    socket.once = (event) => console.log("What does this do", event)
 
     socket.on("message", async (msg) => {
 
