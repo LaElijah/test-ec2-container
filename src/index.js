@@ -16,15 +16,18 @@ dotenv.config();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT || 8080
-const debounce = (callback, wait) => {
-    let timeoutId = null;
+function debounceLeading(func, timeout = 300){
+    let timer;
     return (...args) => {
-      window.clearTimeout(timeoutId);
-      timeoutId = window.setTimeout(() => {
-        callback.apply(null, args);
-      }, wait);
+      if (!timer) {
+        func.apply(this, args);
+      }
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        timer = undefined;
+      }, timeout);
     };
-  };
+  }
   
 const clients = new Map()
 const groups = new Map()
@@ -38,7 +41,7 @@ function removeClient(clientKey, socket) {
     socket.terminate()
     }
 
-const debouncedRemoveClient =  debounce(removeClient, 500)
+const debouncedRemoveClient =  debounceLeading(removeClient, 500)
 
 // Kafka event starting
 const kafka = new Kafka({
