@@ -32,8 +32,14 @@ const groups = new Map()
 
 const app = express();
 
+
 function removeClient(clientKey, socket) {
-    if (clientKey && clients.get(clientKey)?.readyState === ws.OPEN) clients.delete(clientKey)
+    console.log("haie", 
+    clients.get(clientKey)?.readyState,
+    ws.OPEN,
+    (clients.get(clientKey)?.readyState === ws.OPEN)
+    )
+    if (clientKey && clients.get(clientKey)?.readyState !== ws.OPEN) clients.delete(clientKey)
     clearInterval(socket.timer);
     socket.terminate()
     console.log(clients.keys())
