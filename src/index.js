@@ -39,7 +39,7 @@ function removeClient(clientKey, socket) {
     console.log(clients.keys())
 }
 
-const debouncedRemoveClient = debounceLeading(removeClient, 500)
+const debouncedRemoveClient = debounceLeading(removeClient, 5000)
 
 // Kafka event starting
 const kafka = new Kafka({
@@ -60,7 +60,7 @@ consumer.subscribe({ topic: 'notification-service', fromBeginning: true })
 
 consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
-        
+
 
         const event = eventType.fromBuffer(message.value)
 
@@ -183,7 +183,7 @@ wsServer.on("connection", async (socket, req) => {
                     if (groups.get(groupId)) groups.set(groupId, new Set([...Array.from(groups.get(groupId)), key]))
                     else groups.set(groupId, new Set([key]))
 
-                    
+
 
                     console.log("group", groups.get(groupId))
 
@@ -227,13 +227,8 @@ wsServer.on("connection", async (socket, req) => {
 
         const clientKey = Array.from(clients.keys()).find(key => key.split('&')[1] === ip)
 
-        if (!socket.isClosed) {
+        debouncedRemoveClient(clientKey, socket)
 
-        removeClient(clientKey, socket)
-
-        }
-        console.log(socket.isClosed)
-        socket.isClosed = true
 
     })
 
