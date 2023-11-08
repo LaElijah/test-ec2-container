@@ -233,7 +233,7 @@ wsServer.on("connection", async (socket, req) => {
     //     socket.terminate()
     // })
 
-    socket.on("pong", (data) => console.log("Got a pong", data.toString()))
+    socket.on("pong", (data) => console.log("Got a pong", data))
 
     socket.timer = setInterval(() => {
         socket.ping()
