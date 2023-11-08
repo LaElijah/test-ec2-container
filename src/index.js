@@ -59,6 +59,7 @@ consumer.subscribe({ topic: 'notification-service', fromBeginning: true })
 
 consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
+        console.log(clients)
 
         const event = eventType.fromBuffer(message.value)
 
