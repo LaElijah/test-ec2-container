@@ -10,12 +10,13 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dbConnection from './_utils/db/dbConnection.js';
 import dotenv from 'dotenv';
+import CallLimiter from './_utils/callLimiter.js';
 dotenv.config();
 
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT || 8080
-
+const caller = new CallLimiter(1)
 const clients = new Map()
 const groups = new Map()
 
@@ -205,25 +206,24 @@ wsServer.on("connection", async (socket, req) => {
     })
 
 
-    let processedDisconnect = false
-
     socket.on("close", () => {
         
         console.log("Client disconnected")
         console.log("pre delete", clients.keys())
-        if (!processedDisconnect) { 
+
+
+        caller.add(() => {
+ 
         const clientKey = Array.from(clients.keys()).find(key => key.split('&')[1] === ip)
         if (clientKey) clients.delete(clientKey)
         clearInterval(socket.timer);
         console.log("post delete", clients.keys())
         socket.terminate()
-        }
+        })
 
-        processedDisconnect = true
+        caller.call()
+    
 
-        setTimeout(() => {
-            processedDisconnect = false
-        }, 1000)
     })
 
     // socket.on("error", (error) => {
