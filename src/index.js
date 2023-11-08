@@ -180,7 +180,7 @@ wsServer.on("connection", async (socket, req) => {
 
     socket.onmessage = async (msg) => {
 
-        if (typeof msg.toString() === "string") {
+            console.log(msg)
             const decodedMessage = JSON.parse(msg.toString())
             let { sender, type } = decodedMessage
             console.log("message sender: ", sender, 185)
@@ -230,7 +230,7 @@ wsServer.on("connection", async (socket, req) => {
                 // if (!clients[decodedMessage.payload.receiver]) await queueEvent(decodedMessage.payload, "notification-service")
             }
         }
-    }
+    
 
 
     socket.on("close", () => {
