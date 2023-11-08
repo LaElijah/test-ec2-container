@@ -59,7 +59,7 @@ export default class CallLimiter extends Queue {
 
     call() {
         // method meant for calling one function once in a period
-        console.log("gonna call")
+        console.log("gonna call", this.calling)
         if (!this.calling && this.store.length === 1) {
             this.store[0]()
             console.log("i just called")
