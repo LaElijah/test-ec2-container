@@ -64,12 +64,14 @@ export default class CallLimiter extends Queue {
             this.store[0]()
             console.log("i just called")
             this.calling = true
+            console.log("aware",this.calling)
             this.clear()
             setTimeout(() => {
                 
                 this.calling = false
             }, this.timeToClear)
         }
+        console.log("aware", this.calling)
     }
 
     clear() {
