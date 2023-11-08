@@ -180,7 +180,7 @@ wsServer.on("connection", async (socket, req) => {
 
     socket.onmessage = async (msg) => {
 
-            console.log(msg)
+            console.log(msg.data)
             const decodedMessage = JSON.parse(msg.toString())
             let { sender, type } = decodedMessage
             console.log("message sender: ", sender, 185)
