@@ -173,9 +173,12 @@ wsServer.on("connection", async (socket, req) => {
                     if (groupId !== "none") {
                         const key = `${sender}&${ip}`
                         clients.set(key, socket)
+                        console.log(sender, "connected")
 
                         if (groups.get(groupId)) groups.set(groupId, new Set([...Array.from(groups.get(groupId)), key]))
                         else groups.set(groupId, new Set([key]))
+
+                        console.log("group", groups.get(groupId))
 
 
 
