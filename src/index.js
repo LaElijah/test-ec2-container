@@ -14,7 +14,7 @@ dotenv.config();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT || 8080
-function debounceLeading(func, timeout = 300) {
+function debounceLeading(func, timeout = 1000) {
     let timer;
     return (...args) => {
         if (!timer) {
