@@ -55,7 +55,7 @@ consumer.run({
                 const dbGroup = await Group.findById(event.groupId)
 
                 // if client is found i can do this by splitting of the username and checking if its a key within the clients object
-                const clientNames = clients.keys().map(key => key.split('&')[0])
+                const clientNames = Array.from(clients.keys()).map(key => key.split('&')[0])
 
                 console.log(clientNames)
 
