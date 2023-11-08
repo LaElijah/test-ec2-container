@@ -34,15 +34,10 @@ const app = express();
 
 
 function removeClient(clientKey, socket) {
-    console.log("haie", 
-    clients.get(clientKey)?.readyState,
-    ws.OPEN,
-    (clients.get(clientKey)?.readyState === ws.OPEN)
-    )
     if (clientKey && clients.get(clientKey)?.readyState !== ws.OPEN) clients.delete(clientKey)
     clearInterval(socket.timer);
     socket.terminate()
-    console.log(clients.keys())
+    console.log("Updated clients", clients.keys(), 40)
 }
 
 const debouncedRemoveClient = debounceLeading(removeClient, 5000)
@@ -81,7 +76,7 @@ consumer.run({
                 // if client is found i can do this by splitting of the username and checking if its a key within the clients object
                 const clientNames = Array.from(clients.keys()).map(key => key.split('&')[0])
 
-                console.log(clientNames)
+                console.log("Prepared client names", clientNames, 79)
 
                 if (groups.get(event.groupId)) {
                     Array.from(groups.get(event.groupId)).forEach(async (client) => {
@@ -179,34 +174,28 @@ wsServer.on("connection", async (socket, req) => {
     })
 
 
-    socket.onclose = (event) => console.log("onclose", event)
+    socket.onclose = (event) => console.log("onclose")
     socket.onerror = (event) => console.log("onerror", event)
-    socket.once = (event) => console.log("What does this do", event)
+    socket.once = (event) => console.log("What does this do")
 
-    socket.on("message", async (msg) => {
+    socket.onmessage = async (msg) => {
 
         const decodedMessage = JSON.parse(msg.toString())
         let { sender, type } = decodedMessage
-        console.log("message sender: ", sender)
+        console.log("message sender: ", sender, 185)
 
         switch (type) {
             case "handshake":
                 socket.isClosed = false
 
                 let { sender, groupId } = decodedMessage
-                console.log("hand", decodedMessage)
                 if (groupId !== "none") {
                     const key = `${sender}&${ip}`
                     clients.set(key, socket)
-                    console.log(sender, "connected")
+                    console.log(sender, "connected", 195)
 
                     if (groups.get(groupId)) groups.set(groupId, new Set([...Array.from(groups.get(groupId)), key]))
                     else groups.set(groupId, new Set([key]))
-
-
-
-                    console.log("group", groups.get(groupId))
-
 
 
                     // Implementing this to get benifits from horizontal scaling
@@ -239,7 +228,7 @@ wsServer.on("connection", async (socket, req) => {
             // if the reciver is not on the server, send the event to the notification bus too 
             // if (!clients[decodedMessage.payload.receiver]) await queueEvent(decodedMessage.payload, "notification-service")
         }
-    })
+    }
 
 
     socket.on("close", () => {
