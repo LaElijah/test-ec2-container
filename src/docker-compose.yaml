@@ -36,7 +36,7 @@ services:
      - "/src/node_modules"
 
     working_dir: "/src"
-    command: "npm run start"
+    command: "ls"
     depends_on:
       - kafka
 
