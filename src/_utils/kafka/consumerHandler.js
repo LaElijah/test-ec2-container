@@ -1,4 +1,4 @@
-import Store from "../tools/stores.js"
+import Store from "../tools/Store.js"
 import Group from '../models/group.js';
 import messageType from "../types/messageType.js"
 
