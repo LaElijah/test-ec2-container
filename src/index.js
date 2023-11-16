@@ -1,6 +1,4 @@
 import Store from "./_utils/tools/Store.js";
-import queueEvent from "./_utils/kafka/queueEvent.js";
-const event = queueEvent
 import consumer from "./_utils/kafka/consumer.js"
 import dbConnection from './_utils/db/dbConnection.js';
 import dotenv from 'dotenv';
