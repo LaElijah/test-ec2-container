@@ -8,15 +8,10 @@ export default class Store {
 
 
   static getStores() {
-    if (!this.instance) {
-        this.instance = new Store()
-        return Store.instance
+    if (!Store.instance) {
+      Store.instance = new Store()
     }
-    else {
-        return Store.instance
-    }
+    return Store.instance
   }
-
-
-
 }
+
