@@ -1,11 +1,11 @@
 import app from "./appConfig.js"
-import consumer from "./_utils/consumer.js"
-import consumerHandler from "./_utils/consumerHandler.js"
+import consumer from "./_utils/kafka/consumer.js"
+import consumerHandler from "./_utils/kafka/consumerHandler.js"
 import dbConnection from './_utils/db/dbConnection.js';
 import dotenv from 'dotenv';
-import wss from "./_utils/wss.js"
-
-
+import wss from "./_utils/sockets/wss.js"
+//
+ 
 dotenv.config();
 const port = process.env.PORT || 8080
 
