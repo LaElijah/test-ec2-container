@@ -8,7 +8,7 @@ export default class Store {
 
 
   static getStores() {
-    if (!instance) {
+    if (!this.instance) {
         this.instance = new Store()
         return Store.instance
     }
