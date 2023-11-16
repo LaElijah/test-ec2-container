@@ -1,9 +1,9 @@
-import app from "./_utils/config/appConfig.js"
 import consumer from "./_utils/kafka/consumer.js"
 import consumerHandler from "./_utils/kafka/consumerHandler.js"
 import dbConnection from './_utils/db/dbConnection.js';
 import dotenv from 'dotenv';
 import wss from "./_utils/sockets/wss.js"
+import app from "./_utils/config/appConfig.js"
 //
  
 dotenv.config();
