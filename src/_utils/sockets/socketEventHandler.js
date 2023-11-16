@@ -1,5 +1,5 @@
-import Store from "./_utils/tools/Store.js"
-import queueEvent from './_utils/kafka/queueEvent.js';
+import Store from "../tools/Store.js"
+import queueEvent from '../kafka/queueEvent.js';
 
 
 const { clients, groups } = Store.getStores()
