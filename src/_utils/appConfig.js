@@ -1,7 +1,7 @@
 import path from "path"
 import { fileURLToPath } from "url";
 import express from 'express';
-import queueEvent from '../kafka/queueEvent.js';
+import queueEvent from './kafka/queueEvent.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 
