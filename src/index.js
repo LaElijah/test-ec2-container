@@ -1,4 +1,4 @@
-import app from "./appConfig.js"
+import app from "./_utils/config/appConfig.js"
 import consumer from "./_utils/kafka/consumer.js"
 import consumerHandler from "./_utils/kafka/consumerHandler.js"
 import dbConnection from './_utils/db/dbConnection.js';

@@ -1,6 +1,6 @@
 
 import express from 'express';
-import queueEvent from './_utils/kafka/queueEvent';
+import queueEvent from '../kafka/queueEvent';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 
