@@ -24,4 +24,7 @@ function removeClient(clientKey, socket) {
 }
 
 
-export const debouncedRemoveClient = debounceLeading(removeClient, 5000)
+const debouncedRemoveClient = debounceLeading(removeClient, 5000)
+
+
+export default debouncedRemoveClient
