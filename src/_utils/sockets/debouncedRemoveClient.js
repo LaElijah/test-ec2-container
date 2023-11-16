@@ -1,4 +1,4 @@
-import Store from "../tools/Store"
+import Store from "../tools/Store.js"
 
 const { clients } = Store.getStores()
 

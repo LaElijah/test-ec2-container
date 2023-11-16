@@ -1,4 +1,3 @@
-import Store from "./_utils/tools/Store.js";
 import consumer from "./_utils/kafka/consumer.js"
 import dbConnection from './_utils/db/dbConnection.js';
 import dotenv from 'dotenv';
