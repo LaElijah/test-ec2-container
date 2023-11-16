@@ -16,7 +16,7 @@ wss.on("connection", async (socket, req) => {
     socket.onclose = (event) => console.log("onclose")
     socket.onerror = (event) => console.log("onerror", event)
     socket.once = (event) => console.log("What does this do")
-    socket.onmessage = socketEventHandler
+    socket.onmessage = (msg) => socketEventHandler(msg, socket)
     socket.on("pong", (data) => "")
     socket.timer = setInterval(() => {
         socket.ping()
