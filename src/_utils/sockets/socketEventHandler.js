@@ -6,6 +6,7 @@ import ws from "ws"
 const { clients, groups } = Store //.getStores()
 
 export default async function socketEventHandler(msg, socket, ip) {
+    console.log(`PROCESS: ${process.pid}`, "GOT MESSAGE")
 
     const decodedMessage = JSON.parse(msg.data.toString())
     let { sender, type } = decodedMessage
