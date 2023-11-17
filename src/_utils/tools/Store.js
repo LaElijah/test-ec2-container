@@ -11,6 +11,7 @@ export default class Store {
     if (!Store.instance) {
       Store.instance = new Store()
     }
+    console.log("Well", Store.instance)
     return Store.instance
   }
 }

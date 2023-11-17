@@ -4,9 +4,7 @@ import socketEventHandler from "./socketEventHandler.js";
 import debouncedRemoveClient from "./debouncedRemoveClient.js"
 import Store from '../tools/Store.js';
 
-const client = Store.getStores()
-console.log(client, "hi")
-const {clients} = client
+const {clients} = Store.getStores()
 
 
 const wss = new WebSocketServer({ noServer: true })
