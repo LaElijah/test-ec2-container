@@ -4,6 +4,8 @@ services:
   kafka: 
     restart: unless-stopped
     image: "bitnami/kafka:latest"
+    logging:
+      driver: none
     container_name: "kafka"
     ports:
       - "9092:9092"
