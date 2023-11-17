@@ -5,7 +5,7 @@ import debouncedRemoveClient from "./debouncedRemoveClient.js"
 import Store from '../tools/Store.js';
 
 const client = Store.getStores()
-console.log(client)
+console.log(client, "hi")
 const {clients} = client
 
 
