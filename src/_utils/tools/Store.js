@@ -1,7 +1,7 @@
 
 
 
-export default class Store {
+ class Store {
   static instance = null
   static clients = new Map()
   static groups = new Map()
@@ -18,5 +18,11 @@ export default class Store {
 
 // const store = new Store()
 
-// export default store
+const data = (function(){
+  this.groups = new Map()
+  this.clients = new Map()
+  return this
+})
+
+export default data
 

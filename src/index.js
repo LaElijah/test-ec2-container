@@ -14,7 +14,6 @@ consumer.run({ eachMessage: consumerHandler })
 
 const httpServer = app.listen(port, async () => {
     await dbConnection()
-    Store.getStores()
     console.log(`Server is running at ${port}`)
 })
 
