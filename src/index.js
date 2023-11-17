@@ -1,4 +1,3 @@
-import Store from "./_utils/tools/Store.js"
 import consumer from "./_utils/kafka/consumer.js"
 import dbConnection from './_utils/db/dbConnection.js';
 import dotenv from 'dotenv';
@@ -13,7 +12,6 @@ const port = process.env.PORT || 8080
 consumer.run({ eachMessage: consumerHandler })
 
 const httpServer = app.listen(port, async () => {
-    console.log("hi", Store)
     await dbConnection()
     console.log(`Server is running at ${port}`)
 })

@@ -3,15 +3,12 @@ import Group from '../models/group.js';
 import messageType from "../types/messageType.js"
 import ws from "ws"
 
-const {clients, groups} = Store //.getStores()
+const {clients, groups} = Store 
 
 
 export default async function consumerHandler({ topic, partition, message }) {
 
-
     const event = messageType.fromBuffer(message.value)
-
-
     switch (event.type) {
 
         case "message":
