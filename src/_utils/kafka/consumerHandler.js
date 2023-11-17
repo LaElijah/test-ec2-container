@@ -7,7 +7,6 @@ const {clients, groups} = Store
 
 
 export default async function consumerHandler({ topic, partition, message }) {
-    console.log(`PROCESS: ${process.pid}`, "CONSUMER", message)
 
     const event = messageType.fromBuffer(message.value)
     switch (event.type) {
