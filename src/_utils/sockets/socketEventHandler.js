@@ -1,5 +1,6 @@
 import Store from "../tools/Store.js"
 import queueEvent from '../kafka/queueEvent.js';
+import ws from "ws"
 
 
 const { clients, groups } = Store //.getStores()
