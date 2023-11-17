@@ -16,15 +16,15 @@ export default avro.Type.forSchema({
             type: 'string'
         },
         {
-            name: 'receiver',
-            type: 'string'
-        },
-        {
             name: 'type',
             type: 'string'
         },
         {
             name: 'timestamp',
+            type: 'string'
+        },
+        {
+            name: 'metadata',
             type: 'string'
         }
     ]
