@@ -20,6 +20,7 @@ export default async function consumerHandler({ topic, partition, message }) {
             // if client is found i can do this by splitting of the username and checking if its a key within the clients object
             const clientNames = Array.from(clients.keys()).map(key => key.split('&')[0])
 
+            console.log(`PROCESS: ${process.pid}`,"CLIENTS", clients,23)
             console.log("Prepared client names", clientNames, 79)
 
             if (groups.get(event.groupId)) {
