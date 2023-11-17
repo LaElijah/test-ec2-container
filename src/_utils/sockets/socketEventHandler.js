@@ -20,6 +20,7 @@ export default async function socketEventHandler(msg, socket, ip) {
             if (groupId !== "none") {
                 const key = `${sender}&${ip}`
                 clients.set(key, socket)
+                console.log(`PROCESS ${process.pid}`, clients, 23)
                 console.log(sender, "connected", 195)
 
                 if (groups.get(groupId)) groups.set(groupId, new Set([...Array.from(groups.get(groupId)), key]))
@@ -49,6 +50,8 @@ export default async function socketEventHandler(msg, socket, ip) {
             break;
 
         case "message":
+
+        console.log(`PROCESS ${process.pid}`, clients, 54)
 
             await queueEvent(decodedMessage, "messaging-service")
 
