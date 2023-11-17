@@ -18,11 +18,8 @@
 
 // const store = new Store()
 
-const data = (function(){
-  this.groups = new Map()
-  this.clients = new Map()
-  return this
-})()
+const groups = new Map()
+const clients = new Map()
 
-export default data
+export default { groups, clients}
 
