@@ -1,6 +1,6 @@
 import Store from "../tools/Store.js"
 
-const { clients } = Store.getStores()
+const { clients } = Store // .getStores()
 
 export function debounceLeading(func, timeout = 1000) {
     let timer;

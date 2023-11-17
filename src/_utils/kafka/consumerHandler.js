@@ -3,7 +3,7 @@ import Group from '../models/group.js';
 import messageType from "../types/messageType.js"
 
 
-const {clients, groups} = Store.getStores()
+const {clients, groups} = Store //.getStores()
 
 
 export default async function consumerHandler({ topic, partition, message }) {

@@ -2,7 +2,7 @@ import Store from "../tools/Store.js"
 import queueEvent from '../kafka/queueEvent.js';
 
 
-const { clients, groups } = Store.getStores()
+const { clients, groups } = Store //.getStores()
 
 export default async function socketHandler(msg, socket) {
 
