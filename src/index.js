@@ -34,6 +34,10 @@ if (cluster.isPrimary) {
 
 else {
 
+    // TODO: I NEED TO USE REDIS TO HANDLE A GLOBAL STORE OF USERS AND IMPLEMENT IT 
+    // SIMILAR TO A MAP TO INPUT USAGE BACK INTO FUNCTIONS 
+    // REDIS ELIJAH REDIS, laugh at this when you see this love, youre doing okay
+    // and youre doing cool things.
 
 
 
