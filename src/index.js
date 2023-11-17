@@ -13,6 +13,7 @@ const port = process.env.PORT || 8080
 consumer.run({ eachMessage: consumerHandler })
 
 const httpServer = app.listen(port, async () => {
+    console.log("hi", Store)
     await dbConnection()
     console.log(`Server is running at ${port}`)
 })
