@@ -22,7 +22,7 @@ const data = (function(){
   this.groups = new Map()
   this.clients = new Map()
   return this
-})
+})()
 
 export default data
 
