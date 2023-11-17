@@ -4,7 +4,7 @@ import queueEvent from '../kafka/queueEvent.js';
 
 const { clients, groups } = Store //.getStores()
 
-export default async function socketHandler(msg, socket) {
+export default async function socketEventHandler(msg, socket, ip) {
 
     const decodedMessage = JSON.parse(msg.data.toString())
     let { sender, type } = decodedMessage
