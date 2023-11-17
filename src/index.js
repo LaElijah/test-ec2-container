@@ -46,7 +46,7 @@ else {
 
     const httpServer = app.listen(port, async () => {
         await dbConnection()
-        console.log(`Server is running at ${port}`)
+        console.log(`PROCESS: ${process.pid} Server is running at ${port}`)
     })
 
     // TODO: Update this to run on routes for seperation of notifications and messages sockets

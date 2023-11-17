@@ -27,7 +27,7 @@ export default async function queueEvent(event, topic) {
     });
 
     if (success) {
-        console.log("Message queued successfully");
+        console.log(`PROCESS: ${process.pid}`,"Message queued successfully");
     } else {
         console.log("Message queue failed");
     }
