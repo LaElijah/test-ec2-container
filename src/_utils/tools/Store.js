@@ -2,7 +2,7 @@
 
 
 export default class Store {
-  static instance
+  static instance = null
   static clients = new Map()
   static groups = new Map()
 
