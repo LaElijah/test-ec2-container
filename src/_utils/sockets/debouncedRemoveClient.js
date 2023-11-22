@@ -1,6 +1,6 @@
-import Store from "../tools/Store.js"
+import getStores from "../globals/store.js";
 import ws from "ws"
-const { clients } = Store // .getStores()
+
 
 export function debounceLeading(func, timeout = 1000) {
     let timer;
@@ -16,11 +16,14 @@ export function debounceLeading(func, timeout = 1000) {
 }
 
 
-function removeClient(clientKey, socket) {
-    if (clientKey && clients.get(clientKey)?.readyState !== ws.OPEN) clients.delete(clientKey)
-    clearInterval(socket.timer);
-    socket.terminate()
-    console.log("Updated clients", clients.keys(), 40)
+async function removeClient(clientKey, socket) {
+    const { localStores: { clients } } = getStores()
+    if (clientKey && clients.get(clientKey)?.readyState !== ws.OPEN) {
+        clients.delete(clientKey)        // await redisWorkers.clients.delete(clientKey)
+        clearInterval(socket.timer);
+        socket.terminate()
+    }
+    console.log("Remaining clients", clients.keys(), 25)
 }
 
 

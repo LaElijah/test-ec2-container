@@ -1,17 +1,14 @@
 import consumer from "./_utils/kafka/consumer.js"
-import dbConnection from './_utils/db/dbConnection.js';
+import dbConnection from './_utils/globals/dbConnection.js';
 import dotenv from 'dotenv';
 import wss from "./_utils/sockets/wss.js"
 import app from "./appConfig.js"
 import consumerHandler from "./_utils/kafka/consumerHandler.js"
 import os from "os"
 import cluster from "cluster";
-
-const cores = os.cpus().length
-
-
-
-
+import getStores from "./_utils/globals/store.js";
+import RedisWorker from "./_utils/tools/RedisWorker.js";
+import messageType from "./_utils/types/messageType.js";
 
 
 
@@ -30,26 +27,50 @@ if (cluster.isPrimary) {
         console.error(`Worker error: ${error.message}`);
     });
 
+
+
+    await consumer.connect()
+    await consumer.subscribe({ topics: ['messaging-service', 'notification-service'] })
+
+
+    await consumer.run({
+        eachMessage: async ({ message, partition }) => {
+            console.log("")
+            for (const id in cluster.workers) {
+                cluster.workers[id].send(
+                    {
+                        type: "message",
+                        message: {
+                            message: messageType.fromBuffer(message.value),
+                            partition
+                        }
+                    })
+            }
+        }
+    }
+    )
+
 }
 
 else {
-
-    // TODO: I NEED TO USE REDIS TO HANDLE A GLOBAL STORE OF USERS AND IMPLEMENT IT 
-    // SIMILAR TO A MAP TO INPUT USAGE BACK INTO FUNCTIONS 
-    // REDIS ELIJAH REDIS, laugh at this when you see this love, youre doing okay
-    // and youre doing cool things.
-
+    const { redisWorkers: { groups } } = getStores({
+        redisWorkers: ["groups"],
+        localStores: ["clients", "groups"]
+    })
 
 
-    // Core seperate
+
+
     dotenv.config();
     const port = process.env.PORT || 8080
 
 
-    consumer.run({ eachMessage: consumerHandler })
+
+    process.on("message", ({ message }) => consumerHandler(message))
 
     const httpServer = app.listen(port, async () => {
         await dbConnection()
+
         console.log(`PROCESS: ${process.pid} Server is running at ${port}`)
     })
 

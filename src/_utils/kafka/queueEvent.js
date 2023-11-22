@@ -20,10 +20,12 @@ export default async function queueEvent(event, topic) {
         topic,
         messages: [
             {
+                key: `${process.pid}`,
                 value: getBufferType(topic)
                     .toBuffer({ ...event })
             }
-        ]
+        ],
+
     });
 
     if (success) {

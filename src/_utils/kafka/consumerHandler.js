@@ -1,54 +1,47 @@
-import Store from "../tools/Store.js"
+import ws from "ws"
 import Group from '../models/group.js';
 import messageType from "../types/messageType.js"
-import ws from "ws"
-
-const {clients, groups} = Store 
+import getStores from "../globals/store.js";
 
 
-export default async function consumerHandler({ topic, partition, message }) {
 
-    const event = messageType.fromBuffer(message.value)
+export default async function consumerHandler({message: event, partition}) { // { topic, partition }
+    console.log(process.pid, "CONSUME", partition)
+    const { localStores: { clients }, redisWorkers: { groups } } = getStores()
+
     switch (event.type) {
 
         case "message":
-            // const hostUser = await User.find({ username: event.sender })
-            // const receiverUser = await User.find({ username: event.receiver })
-            const dbGroup = await Group.findById(event.groupId)
+            const group = await groups.sMembers(event.groupId)
+            // NOOP's if server doesnt host any activity for this group
 
-            // if client is found i can do this by splitting of the username and checking if its a key within the clients object
-            const clientNames = Array.from(clients.keys()).map(key => key.split('&')[0])
+            if (group) {
+                const dbGroup = await Group.findById(event.groupId)
 
-            console.log(`PROCESS: ${process.pid}`,"CLIENTS", clients,23)
-            console.log("Prepared client names", clientNames, 79)
+                // Clients in the group this server is handling
+                // const clientNames = group.map(key => key.split('&')[0])
 
-            if (groups.get(event.groupId)) {
-                Array.from(groups.get(event.groupId)).forEach(async (client) => {
-
-                    if (client.split('&')[0] !== event.sender
+                group.forEach((client) => {
+                    if (
+                        client.split('&')[0] !== event.sender
                         && clients.get(client)?.readyState === ws.OPEN
                     ) {
-
                         clients.get(client).send(JSON.stringify({
                             type: "message",
                             payload: event
                         }))
                     }
                 })
+
+                // Update user history here
+                if (!dbGroup.messages.find(message => message.UUID)) {
+                    dbGroup.messages.push({ ...event })
+                    await dbGroup.save()
+                }
+
             }
-
-            // Update user history here
-            dbGroup.messages.push({ ...event })
-            await dbGroup.save()
     }
-
 }
 
 
-// To let the user know their message was a suuccess, might be better off sending a notification eevnt 
-// clients[event.username].send(JSON.stringify({
-//     type: 'status',
-//     payload: {
-//         status: 'success'
-//     }
-// }))
+

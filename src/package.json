@@ -21,6 +21,11 @@
     "kafkajs": "^2.2.4",
     "mongoose": "^8.0.0",
     "nodemon": "^3.0.1",
+    "redis": "^4.6.10",
+    "uuid": "^9.0.1",
     "ws": "^8.14.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.3"
   }
 }

@@ -1,36 +1,39 @@
-
 import { WebSocketServer } from 'ws';
 import socketEventHandler from "./socketEventHandler.js";
 import debouncedRemoveClient from "./debouncedRemoveClient.js"
-import Store from '../tools/Store.js';
+import getStores from '../globals/store.js';
 
-const {clients} = Store   //.getStores()
 
 
 const wss = new WebSocketServer({ noServer: true })
+
 
 wss.on("close", (event) => console.log("server close", event))
 wss.on("error", (event) => console.log("error", event))
 
 wss.on("connection", async (socket, req) => {
+    const {localStores: {clients}} = getStores() 
+    
+    const ip = req.socket.remoteAddress
 
-
-    let ip = req.socket.remoteAddress
 
     socket.onclose = (event) => console.log("onclose")
     socket.onerror = (event) => console.log("onerror", event)
     socket.once = (event) => console.log("What does this do")
     socket.onmessage = (msg) => socketEventHandler(msg, socket, ip)
+
     socket.on("pong", (data) => "")
     socket.timer = setInterval(() => {
         socket.ping()
     }, 30000)
+
     socket.on("unexpected-response", (req, res) => {
         console.log("unexpected", req, res)
     })
     socket.on("upgrade", (req) => {
         console.log("upgrade", req)
     })
+
     socket.on("close", () => debouncedRemoveClient(
         Array
             .from(clients.keys())
@@ -40,15 +43,5 @@ wss.on("connection", async (socket, req) => {
 
     
 })
-
- // socket.on("error", (error) => {
-    //     console.log("Error", error)
-
-    //     const clientKey = Object.keys(clients).find(key => key.split('&')[1] === ip)
-    //     if (clientKey) delete clients[clientKey]
-
-    //     clearInterval(socket.timer);
-    //     socket.terminate()
-    // })
 
 export default wss
