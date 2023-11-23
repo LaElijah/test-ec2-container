@@ -34,7 +34,7 @@ export default async function consumerHandler({message: event, partition}) { // 
                 })
 
                 // Update user history here
-                if (!dbGroup.messages.find(message => message.UUID)) {
+                if (!dbGroup.messages.find(message => message.UUID === event.UUID)) {
                     dbGroup.messages.push({ ...event })
                     await dbGroup.save()
                 }
