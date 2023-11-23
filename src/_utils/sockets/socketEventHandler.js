@@ -21,6 +21,7 @@ export default async function socketEventHandler(msg, socket, ip) {
 
         case "message":
             decodedMessage.UUID = uuid.v4()
+            console.log("MESSAGE ID", decodedMessage.UUID)
             await queueEvent(decodedMessage, "messaging-service")
             break;
     }
