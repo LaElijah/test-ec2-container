@@ -26,6 +26,10 @@ export default avro.Type.forSchema({
         {
             name: 'metadata',
             type: 'string'
+        },
+        {
+            name: 'UUID',
+            type: 'string'
         }
     ]
 });
