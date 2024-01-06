@@ -1,10 +1,10 @@
 
 export default class Queue {
-    store
+    public store: any[]
     limit = 20
 
 
-    constructor(limit, startingArray) {
+    constructor(limit: number, startingArray: any[]) {
         if (limit) this.limit = limit
         
         if (startingArray) {
@@ -21,7 +21,7 @@ export default class Queue {
         
     }
 
-    add(element) {
+    add(element: any) {
     
      
         let limit = this.limit || 20

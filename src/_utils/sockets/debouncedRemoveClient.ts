@@ -1,22 +1,11 @@
-import getStores from "../globals/store.js";
+import getStores from "../global/store.js";
 import ws from "ws"
+import debounceLeading from "../tools/debounceLeading.js";
 
 
-export function debounceLeading(func, timeout = 1000) {
-    let timer;
-    return (...args) => {
-        if (!timer) {
-            func.apply(this, args);
-        }
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-            timer = undefined;
-        }, timeout);
-    };
-}
 
 
-async function removeClient(clientKey, socket) {
+async function removeClient(clientKey: string, socket: { timer: string | number | NodeJS.Timeout | undefined; terminate: () => void; }) {
     const { localStores: { clients } } = getStores()
     if (clientKey && clients.get(clientKey)?.readyState !== ws.OPEN) {
         clients.delete(clientKey)        // await redisWorkers.clients.delete(clientKey)

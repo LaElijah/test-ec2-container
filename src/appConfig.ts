@@ -3,11 +3,13 @@ import { fileURLToPath } from "url";
 import express from 'express';
 import queueEvent from './_utils/kafka/queueEvent.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
+import events from "./routes/events.js"
 
 const app = express();
 
 app.use(express.json())
+
+app.use("/", events)
 
 app.post('/create', async (req, res) => {
 

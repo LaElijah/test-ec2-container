@@ -1,9 +1,15 @@
 import RedisWorker from "../tools/RedisWorker.js";
 
-let store = { redisWorkers: {}, localStores: {}, localSets: {} };
+type StoreType = {
+    redisWorkers: { [x: string]: RedisWorker},
+    localStores: { [x: string]: Map<string, any> },
+    localSets: { [x: string]: Set<string> }
+}
+
+let store: StoreType = { redisWorkers: {}, localStores: {}, localSets: {} };
 
 
-function getStores(stores) {
+function getStores(stores?: { redisWorkers?: string | string[]; localStores?: string | string[]; localSets?: string | string[]; }): StoreType {
 
     if (stores) {
         const { redisWorkers, localStores, localSets } = stores
@@ -11,7 +17,7 @@ function getStores(stores) {
 
         if (redisWorkers) Array.isArray(redisWorkers)
             ? store.redisWorkers = Object.fromEntries(redisWorkers.map(key => [key, new RedisWorker({ name: key })]))
-            : store.redisWorkers[redisWorkers] = new RedisWorker({ redisWorkers })
+            : store.redisWorkers[redisWorkers] = new RedisWorker({ name: redisWorkers })
 
         if (localStores) Array.isArray(localStores)
             ? store.localStores = Object.fromEntries(localStores.map(key => [key, new Map()]))
@@ -27,7 +33,7 @@ function getStores(stores) {
 
 
     
-    if (store.redisWorkers || store.localStores || store.localSets) return { ...store };
+    return { ...store };
 }
 
 export default getStores;

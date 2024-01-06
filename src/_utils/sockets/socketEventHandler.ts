@@ -1,27 +1,33 @@
+import { MessageEvent } from 'ws';
 import queueEvent from '../kafka/queueEvent.js';
-import handleHandshake from './handleHandshake.js';
+import handleConnection from './handleConnection.js';
 import * as uuid from "uuid"
 
-export default async function socketEventHandler(msg, socket, ip) {
+// beforeAll in a switch case? 
+
+export default async function socketEventHandler(msg: MessageEvent, socket: any, id: string ) {
 
     const decodedMessage = JSON.parse(msg.data.toString())
     const { type, groupId, sender } = decodedMessage 
-    
-    console.log(`PROCESS: ${process.pid}`, "GOT MESSAGE")
 
     switch (type) {
-        case "handshake":
-            await handleHandshake({
+        case "connection":
+            await handleConnection({
                 sender,
                 groupId,
                 socket,
-                ip,
+                id,
             })
             break;
 
         case "message":
             await queueEvent({...decodedMessage, UUID: uuid.v4()}, "messaging-service")
             break;
+
+        case "notification":
+            await queueEvent({...decodedMessage, UUID: uuid.v4()}, "notification-service")
+            break;
+
     }
 
 }
